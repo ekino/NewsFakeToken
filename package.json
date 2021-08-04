@@ -1,0 +1,26 @@
+{
+  "name": "@newsfaketoken/monorepo",
+  "version": "0.1.0",
+  "private": true,
+  "license": "MIT",
+  "scripts": {
+    "contracts:clean": "yarn workspace @newsfaketoken/contracts clean",
+    "contracts:compile": "yarn workspace @newsfaketoken/contracts compile",
+    "contracts:migrate": "yarn workspace @newsfaketoken/contracts migrate",
+    "contracts:test": "yarn workspace @newsfaketoken/contracts test",
+    "minter:start": "yarn workspace @newsfaketoken/minter start",
+    "minter:build": "yarn workspace @newsfaketoken/minter build",
+    "minter:lint": "yarn minter:lint:eslint && yarn minter:lint:prettier && yarn minter:lint:types",
+    "minter:lint:eslint": "yarn workspace @newsfaketoken/minter eslint . --ext ts,tsx",
+    "minter:lint:prettier": "yarn workspace @newsfaketoken/minter prettier -c src/**/*.{ts,tsx}",
+    "minter:lint:types": "yarn workspace @newsfaketoken/minter tsc --noEmit",
+    "sandbox:shell": "docker exec -it dev-sandbox ash",
+    "sandbox:start": "docker run --rm --name dev-sandbox --detach -p 8732:20000 tqtezos/flextesa:20210602 flobox start",
+    "sandbox:stop": "docker kill dev-sandbox"
+  },
+  "workspaces": {
+    "packages": [
+      "packages/*"
+    ]
+  }
+}

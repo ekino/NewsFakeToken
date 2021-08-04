@@ -1,5 +1,5 @@
 {
-  "name": "example-react-wallet-provider",
+  "name": "@newsfaketoken/minter",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
