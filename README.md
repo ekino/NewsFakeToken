@@ -13,7 +13,7 @@ There are 2 packages:
 ## Dev
 
 - yarn minter:start / starts the minter dapp from the minter package
-- yarn sandox:start / starts the flextesa sandbox
+- yarn sandbox:start / starts the flextesa sandbox
 - yarn contracts:compile Example / compiles a contract with ligo
 - yarn contracts:migrate / deploy contracts
 
