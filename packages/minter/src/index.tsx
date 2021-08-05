@@ -2,17 +2,17 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './index.css';
+import { WalletProvider } from '@tezos-contrib/react-wallet-provider';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import { WalletProvider } from '@tezos-contrib/react-wallet-provider';
 
 ReactDOM.render(
-  <React.StrictMode>
-    <WalletProvider name="my-example-app" clientType="beacon">
-      <App />
-    </WalletProvider>
-  </React.StrictMode>,
-  document.getElementById('root'),
+    <React.StrictMode>
+        <WalletProvider name="my-example-app" clientType="beacon">
+            <App />
+        </WalletProvider>
+    </React.StrictMode>,
+    document.getElementById('root'),
 );
 
 // If you want to start measuring performance in your app, pass a function
