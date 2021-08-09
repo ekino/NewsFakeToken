@@ -1,10 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
-// import './index.css';
 import { WalletProvider } from '@tezos-contrib/react-wallet-provider';
 import App from './App';
-import MintForm from './MintForm';
 import reportWebVitals from './reportWebVitals';
 
 ReactDOM.render(

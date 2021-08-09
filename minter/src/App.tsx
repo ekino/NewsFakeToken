@@ -1,4 +1,14 @@
-import { Navbar, Nav, Container, Row, Col, Button, Badge, ButtonGroup } from 'react-bootstrap';
+import {
+    Navbar,
+    Nav,
+    Container,
+    Row,
+    Col,
+    Button,
+    Badge,
+    ButtonGroup,
+    Modal,
+} from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
     faPlusCircle,
@@ -8,9 +18,11 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { useWallet } from '@tezos-contrib/react-wallet-provider';
 import Datatable from 'react-data-table-component';
-import React from 'react';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import contractAddress from '@newsfaketoken/contracts/deployments/NFTS_contract';
+import React, { useState } from 'react';
+import MintForm from './MintForm';
+import UpdateForm from './RemintForm';
 
 const AddressComponent: React.FC = () => {
     const { activeAccount } = useWallet();
@@ -61,55 +73,96 @@ const LoginComponent: React.FC = () => {
     );
 };
 
-const MintButtonComponent: React.FC = () => (
-    <Button variant="success" size="sm">
-        <FontAwesomeIcon icon={faPlusCircle} /> Mint news
-    </Button>
-);
+function MintButtonComponent(): JSX.Element {
+    const [show, setShow] = useState(false);
+    function handleClose(): void {
+        setShow(false);
+    }
+    function handleShow(): void {
+        setShow(true);
+    }
+
+    return (
+        <>
+            <Button variant="success" size="sm" onClick={handleShow}>
+                <FontAwesomeIcon icon={faPlusCircle} /> Mint news
+            </Button>
+            <Modal show={show} onHide={handleClose} centered>
+                <Modal.Header closeButton>
+                    <Modal.Title>Mint your news</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <MintForm />
+                </Modal.Body>
+            </Modal>
+        </>
+    );
+}
 
 // TODO
-const setInvalid = (tokenId: string): void => {
-    console.log(tokenId);
-};
+function InvalidModal(props: any): JSX.Element {
+    const [show, setShow] = useState(false);
+    const [nft, setnft] = useState([] as any);
+    function handleClose(): void {
+        setShow(false);
+    }
+    function handleShow(): void {
+        setShow(true);
+    }
+    return (
+        <>
+            <Button variant="outline-warning" size="sm" onClick={handleShow}>
+                <FontAwesomeIcon icon={faTimesCircle} /> Set Invalid
+            </Button>
+            <Modal show={show} onHide={handleClose} centered>
+                <Modal.Header closeButton>
+                    <Modal.Title>Update your news </Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <UpdateForm
+                        NftName={props.nftName}
+                        NftSources={props.nftSource}
+                        Url={props.Url}
+                    />
+                </Modal.Body>
+            </Modal>
+        </>
+    );
+}
 
 function App(): JSX.Element {
     const { connected } = useWallet();
+    const [invalid, SetInvalid] = useState(false);
     const headers = [
         { name: 'Token ID', selector: 'tokenId', grow: 0 },
         { name: 'Token Name', selector: 'tokenName', grow: 1 },
+        { name: 'Url of the article', selector: 'url', grow: 2 },
+        { name: 'Sources', selector: 'sourcesNames', grow: 3 },
         {
             name: 'Actions',
             button: true,
             minWidth: '150px',
             cell: (row: any) => (
-                <ButtonGroup size="sm">
-                    <Button
-                        variant="outline-warning"
-                        size="sm"
-                        onClick={() => setInvalid(row.tokenId)}
-                    >
-                        <FontAwesomeIcon icon={faTimesCircle} /> Set Invalid
-                    </Button>
-                </ButtonGroup>
+                <InvalidModal nftName={row.tokenName} nftSource={row.sourcesNames} Url={row.url} />
             ),
         },
     ];
     const data = [
-        { tokenId: 1, tokenName: 'foo' },
-        { tokenId: 2, tokenName: 'foo' },
-        { tokenId: 3, tokenName: 'foo' },
-        { tokenId: 11, tokenName: 'foo' },
-        { tokenId: 12, tokenName: 'foo' },
-        { tokenId: 13, tokenName: 'foo' },
-        { tokenId: 21, tokenName: 'foo' },
-        { tokenId: 22, tokenName: 'foo' },
-        { tokenId: 23, tokenName: 'foo' },
-        { tokenId: 31, tokenName: 'foo' },
-        { tokenId: 32, tokenName: 'foo' },
-        { tokenId: 33, tokenName: 'foo' },
-        { tokenId: 41, tokenName: 'foo' },
-        { tokenId: 42, tokenName: 'foo' },
-        { tokenId: 43, tokenName: 'foo' },
+        { tokenId: 1, tokenName: 'folll', url: 'http://url1.com', sourcesNames: ['a', 'b'] },
+        { tokenId: 2, tokenName: 'folo', sourcesNames: ['cd', 'ef'] },
+        { tokenId: 3, tokenName: 'fowo', sourcesNames: ['NFT1', 'NFT2'] },
+        { tokenId: 11, tokenName: 'foao', sourcesNames: ['NFT1', 'NFT2'] },
+        { tokenId: 12, tokenName: 'fozo', sourcesNames: ['NFT1', 'NFT2'] },
+        { tokenId: 13, tokenName: 'foyo', sourcesNames: ['NFT1', 'NFT2'] },
+        { tokenId: 21, tokenName: 'fobo', sourcesNames: ['NFT1', 'NFT2'] },
+        { tokenId: 22, tokenName: 'foqo', sourcesNames: ['NFT1', 'NFT2'] },
+        { tokenId: 23, tokenName: 'foso', sourcesNames: ['NFT1', 'NFT2'] },
+        { tokenId: 31, tokenName: 'fogo', sourcesNames: ['NFT1', 'NFT2'] },
+        { tokenId: 32, tokenName: 'foro', sourcesNames: ['NFT1', 'NFT2'] },
+        { tokenId: 33, tokenName: 'foeo', sourcesNames: ['NFT1', 'NFT2'] },
+        { tokenId: 41, tokenName: 'foto', sourcesNames: ['NFT1', 'NFT2'] },
+        { tokenId: 42, tokenName: 'fopo', sourcesNames: ['NFT1', 'NFT2'] },
+        { tokenId: 43, tokenName: 'follo', sourcesNames: ['NFT1', 'NFT2'] },
     ];
 
     const actionsMemo = React.useMemo(() => <MintButtonComponent />, []);
