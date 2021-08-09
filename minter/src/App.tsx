@@ -9,6 +9,8 @@ import {
 import { useWallet } from '@tezos-contrib/react-wallet-provider';
 import Datatable from 'react-data-table-component';
 import React from 'react';
+// eslint-disable-next-line import/no-extraneous-dependencies
+import contractAddress from '@newsfaketoken/contracts/deployments/NFTS_contract';
 
 const AddressComponent: React.FC = () => {
     const { activeAccount } = useWallet();
@@ -123,6 +125,7 @@ function App(): JSX.Element {
                     {connected && (
                         <>
                             <h2 className="mt-5">Minted NewsFT</h2>
+                            <h3>{contractAddress}</h3>
                             <p className="lead">
                                 Those are your minted NewsFT. You can see their status, and invalid
                                 them here if need be. Click on &quot;Mint&quot; to create a new

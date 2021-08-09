@@ -14,8 +14,8 @@ There are 2 packages:
 
 - yarn minter:start / starts the minter dapp from the minter package
 - yarn sandbox:start / starts the flextesa sandbox
-- yarn contracts:compile Example / compiles a contract with ligo
-- yarn contracts:migrate / deploy contracts
+- yarn contracts:compile NFTS_contract.mligo / compiles a contract with ligo
+- yarn contracts:deploy dev / deploy contracts
 
 To compile, deploy and launch tests in a row, run `yarn contracts:compile token.ligo && yarn contracts:deploy dev 1 && yarn contracts:test`
 
