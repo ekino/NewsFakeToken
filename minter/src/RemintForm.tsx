@@ -5,11 +5,13 @@ import Button from 'react-bootstrap/Button';
 import InputGroup from 'react-bootstrap/InputGroup';
 import ListGroup from 'react-bootstrap/ListGroup';
 
-function MintForm(): JSX.Element {
+function UpdateForm(props: any): JSX.Element {
     const [validated, setValidated] = useState(false);
     const [state, setState] = useState(false);
-    const [NFT, setname] = useState('');
-    const [listNFTSource, setList] = useState([] as any);
+    const [NFT, setName] = useState(props.NftName);
+    const [NftSource, setNftSource] = useState('');
+    const [url, setUrl] = useState(props.Url);
+    const [listNFTSource, setList] = useState(props.NftSources);
 
     const handleSubmit = (event: any): void => {
         const form = event.currentTarget;
@@ -17,31 +19,39 @@ function MintForm(): JSX.Element {
             event.preventDefault();
             event.stopPropagation();
         }
-
         setValidated(true);
     };
 
     const handleChange = (event: any): void => {
-        setname(event.target.value);
+        setNftSource(event.target.value);
     };
 
     const handleClick = (evt: any): void => {
-        listNFTSource.push(NFT);
+        listNFTSource.push(NftSource);
+        setList(listNFTSource);
         setState(evt);
-        setname('');
+        setNftSource('');
     };
 
     const handleClickDel = (evt: any): void => {
         listNFTSource.pop();
+        setList(listNFTSource);
         setState(evt);
     };
 
     return (
         <Container>
             <Form noValidate validated={validated} onSubmit={handleSubmit}>
-                <Form.Group className="mb-3" controlId="Url">
-                    <Form.Label>Url of the article</Form.Label>
-                    <Form.Control required type="url" placeholder="Url of the article" />
+                <Form.Group>
+                    <Form.Label>Title : {NFT}</Form.Label>
+                </Form.Group>
+                <Form.Group className="mb-3" controlId="OldUrl">
+                    <Form.Label>Url of the article : </Form.Label>
+                    <Form.Label>{url}</Form.Label>
+                </Form.Group>
+                <Form.Group className="mb-3" controlId="NewUrl">
+                    <Form.Label>Url of the new article :</Form.Label>
+                    <Form.Control required type="url" placeholder="url of the new article" />
                     <Form.Control.Feedback type="invalid">
                         Please enter an url
                     </Form.Control.Feedback>
@@ -52,7 +62,7 @@ function MintForm(): JSX.Element {
                         <Form.Control
                             type="text"
                             placeholder="NFT source of the article"
-                            value={NFT}
+                            value={NftSource}
                             onChange={handleChange}
                         />
                         <Form.Control.Feedback type="invalid">
@@ -85,4 +95,4 @@ function MintForm(): JSX.Element {
     );
 }
 
-export default MintForm;
+export default UpdateForm;
