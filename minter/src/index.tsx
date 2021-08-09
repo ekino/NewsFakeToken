@@ -7,7 +7,6 @@ import App from './App';
 import MintForm from './MintForm';
 import reportWebVitals from './reportWebVitals';
 
-
 ReactDOM.render(
     <React.StrictMode>
         <WalletProvider name="my-example-app" clientType="beacon">

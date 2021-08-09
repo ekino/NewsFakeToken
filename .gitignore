@@ -17,6 +17,7 @@ build
 npm-debug.log*
 
 # contracts
-/packages/contracts/builds
-/packages/contracts/deployments
-!/packages/contracts/deployments/.keep
+/contracts/deployments
+!/contracts/deployments/.keep
+*.log
+__pycache_
