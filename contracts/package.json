@@ -8,8 +8,9 @@
         "test": "mocha -r ts-node/register tests/**/*.test.ts --timeout 30000"
     },
     "devDependencies": {
-        "@taquito/signer": "^7.1.0-beta.0",
-        "@taquito/taquito": "^7.1.0-beta.0",
+        "@taquito/signer": "^10.0.0",
+        "@taquito/taquito": "^10.0.0",
+        "@taquito/utils": "^10.0.0",
         "@types/chai": "^4.2.14",
         "@types/mocha": "^8.2.0",
         "@types/node": "^14.14.14",
