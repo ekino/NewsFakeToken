@@ -1,14 +1,4 @@
-import {
-    Navbar,
-    Nav,
-    Container,
-    Row,
-    Col,
-    Button,
-    Badge,
-    ButtonGroup,
-    Modal,
-} from 'react-bootstrap';
+import { Navbar, Nav, Container, Row, Col, Button, Badge, Modal } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
     faPlusCircle,
@@ -16,13 +6,17 @@ import {
     faSignOutAlt,
     faTimesCircle,
 } from '@fortawesome/free-solid-svg-icons';
-import { useWallet } from '@tezos-contrib/react-wallet-provider';
+import { useWallet, WalletProvider } from '@tezos-contrib/react-wallet-provider';
 import Datatable from 'react-data-table-component';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import contractAddress from '@newsfaketoken/contracts/deployments/NFTS_contract';
 import React, { useState } from 'react';
 import MintForm from './MintForm';
 import UpdateForm from './RemintForm';
+import { TezosToolkit } from '@taquito/taquito';
+
+const Tezos = new TezosToolkit('http://52.47.113.94:8732');
+const balance = Tezos.tz.getBalance('tz1MwYuP8c6DGxrbJAiY1Vdt1kcW2j9o5EmP');
 
 const AddressComponent: React.FC = () => {
     const { activeAccount } = useWallet();
@@ -75,9 +69,11 @@ const LoginComponent: React.FC = () => {
 
 function MintButtonComponent(): JSX.Element {
     const [show, setShow] = useState(false);
+
     function handleClose(): void {
         setShow(false);
     }
+
     function handleShow(): void {
         setShow(true);
     }
@@ -99,7 +95,6 @@ function MintButtonComponent(): JSX.Element {
     );
 }
 
-// TODO
 function InvalidModal(props: any): JSX.Element {
     const [show, setShow] = useState(false);
     const [nft, setnft] = useState([] as any);
@@ -131,13 +126,14 @@ function InvalidModal(props: any): JSX.Element {
 }
 
 function App(): JSX.Element {
-    const { connected } = useWallet();
+    const { connected, activeAccount, client } = useWallet();
     const [invalid, SetInvalid] = useState(false);
     const headers = [
         { name: 'Token ID', selector: 'tokenId', grow: 0 },
         { name: 'Token Name', selector: 'tokenName', grow: 1 },
-        { name: 'Url of the article', selector: 'url', grow: 2 },
-        { name: 'Sources', selector: 'sourcesNames', grow: 3 },
+        { name: 'Url of the article', selector: 'url', grow: 3 },
+        { name: 'Sources', selector: 'sourcesNames', grow: 2 },
+        { name: 'Status', selector: 'status', grow: 1 },
         {
             name: 'Actions',
             button: true,
@@ -148,21 +144,9 @@ function App(): JSX.Element {
         },
     ];
     const data = [
-        { tokenId: 1, tokenName: 'folll', url: 'http://url1.com', sourcesNames: ['a', 'b'] },
-        { tokenId: 2, tokenName: 'folo', sourcesNames: ['cd', 'ef'] },
-        { tokenId: 3, tokenName: 'fowo', sourcesNames: ['NFT1', 'NFT2'] },
-        { tokenId: 11, tokenName: 'foao', sourcesNames: ['NFT1', 'NFT2'] },
-        { tokenId: 12, tokenName: 'fozo', sourcesNames: ['NFT1', 'NFT2'] },
-        { tokenId: 13, tokenName: 'foyo', sourcesNames: ['NFT1', 'NFT2'] },
-        { tokenId: 21, tokenName: 'fobo', sourcesNames: ['NFT1', 'NFT2'] },
-        { tokenId: 22, tokenName: 'foqo', sourcesNames: ['NFT1', 'NFT2'] },
-        { tokenId: 23, tokenName: 'foso', sourcesNames: ['NFT1', 'NFT2'] },
-        { tokenId: 31, tokenName: 'fogo', sourcesNames: ['NFT1', 'NFT2'] },
-        { tokenId: 32, tokenName: 'foro', sourcesNames: ['NFT1', 'NFT2'] },
-        { tokenId: 33, tokenName: 'foeo', sourcesNames: ['NFT1', 'NFT2'] },
-        { tokenId: 41, tokenName: 'foto', sourcesNames: ['NFT1', 'NFT2'] },
-        { tokenId: 42, tokenName: 'fopo', sourcesNames: ['NFT1', 'NFT2'] },
-        { tokenId: 43, tokenName: 'follo', sourcesNames: ['NFT1', 'NFT2'] },
+        { tokenId: 1, tokenName: 'fomo', url: 'http://url1.com', sourcesNames: ['a', 'b'] },
+        { tokenId: 2, tokenName: 'folo', url: 'http://url1.com', sourcesNames: ['cd', 'ef'] },
+        { tokenId: 3, tokenName: 'fowo', url: 'http://url1.com', sourcesNames: ['NFT1', 'NFT2'] },
     ];
 
     const actionsMemo = React.useMemo(() => <MintButtonComponent />, []);
@@ -178,7 +162,7 @@ function App(): JSX.Element {
                     {connected && (
                         <>
                             <h2 className="mt-5">Minted NewsFT</h2>
-                            <h3>{contractAddress}</h3>
+                            <p>The address of the smart contract is : {contractAddress}</p>
                             <p className="lead">
                                 Those are your minted NewsFT. You can see their status, and invalid
                                 them here if need be. Click on &quot;Mint&quot; to create a new

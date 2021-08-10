@@ -4,6 +4,10 @@ import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import InputGroup from 'react-bootstrap/InputGroup';
 import ListGroup from 'react-bootstrap/ListGroup';
+import DeleteIcon from '@material-ui/icons/Delete';
+import { ListItemText } from '@material-ui/core';
+import { ListItemSecondaryAction } from '@material-ui/core';
+import { IconButton } from '@material-ui/core';
 
 function MintForm(): JSX.Element {
     const [validated, setValidated] = useState(false);
@@ -17,7 +21,6 @@ function MintForm(): JSX.Element {
             event.preventDefault();
             event.stopPropagation();
         }
-
         setValidated(true);
     };
 
@@ -26,13 +29,17 @@ function MintForm(): JSX.Element {
     };
 
     const handleClick = (evt: any): void => {
-        listNFTSource.push(NFT);
-        setState(evt);
-        setname('');
+        if (NFT === '') {
+            alert('Please enter a source');
+        } else {
+            listNFTSource.push(NFT);
+            setState(evt);
+            setname('');
+        }
     };
 
-    const handleClickDel = (evt: any): void => {
-        listNFTSource.pop();
+    const deleteItem = (index: any, evt: any): void => {
+        listNFTSource.splice(index, 1);
         setState(evt);
     };
 
@@ -65,17 +72,21 @@ function MintForm(): JSX.Element {
                         >
                             Add source
                         </Button>
-                        <Button
-                            variant="outline-secondary"
-                            id="button-addon2"
-                            onClick={handleClickDel}
-                        >
-                            Delete source
-                        </Button>
                     </InputGroup>
                     <ListGroup id="ListNFT">
-                        {listNFTSource.map((item: any) => (
-                            <ListGroup.Item variant="light">{item}</ListGroup.Item>
+                        {listNFTSource.map((item: any, index: any) => (
+                            <ListGroup.Item variant="light" key={index}>
+                                <ListItemText primary={item} />
+                                <ListItemSecondaryAction>
+                                    <IconButton
+                                        edge="end"
+                                        aria-label="delete"
+                                        onClick={(evt) => deleteItem(index, evt)}
+                                    >
+                                        <DeleteIcon />
+                                    </IconButton>
+                                </ListItemSecondaryAction>
+                            </ListGroup.Item>
                         ))}
                     </ListGroup>
                 </Form.Group>
