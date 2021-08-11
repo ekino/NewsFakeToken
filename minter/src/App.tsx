@@ -11,9 +11,9 @@ import Datatable from 'react-data-table-component';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import contractAddress from '@newsfaketoken/contracts/deployments/NFTS_contract';
 import React, { useState } from 'react';
+import { TezosToolkit } from '@taquito/taquito';
 import MintForm from './MintForm';
 import UpdateForm from './RemintForm';
-import { TezosToolkit } from '@taquito/taquito';
 
 const Tezos = new TezosToolkit('http://52.47.113.94:8732');
 const balance = Tezos.tz.getBalance('tz1MwYuP8c6DGxrbJAiY1Vdt1kcW2j9o5EmP');
