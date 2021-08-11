@@ -6,35 +6,32 @@ import {
     faSignOutAlt,
     faTimesCircle,
 } from '@fortawesome/free-solid-svg-icons';
-import { useWallet, WalletProvider } from '@tezos-contrib/react-wallet-provider';
 import Datatable from 'react-data-table-component';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import contractAddress from '@newsfaketoken/contracts/deployments/NFTS_contract';
 import React, { useState } from 'react';
-import { TezosToolkit } from '@taquito/taquito';
 import MintForm from './MintForm';
 import UpdateForm from './RemintForm';
-
-const Tezos = new TezosToolkit('http://52.47.113.94:8732');
-const balance = Tezos.tz.getBalance('tz1MwYuP8c6DGxrbJAiY1Vdt1kcW2j9o5EmP');
+import useBeacon from './hooks/useBeacon';
+import { DEFAULT_NETWORK, NETWORKS } from './defaults';
 
 const AddressComponent: React.FC = () => {
-    const { activeAccount } = useWallet();
+    const { pkh } = useBeacon();
     return (
         <Badge pill bg="primary">
-            {activeAccount?.address}
+            {pkh}
         </Badge>
     );
 };
 
 const NavBarComponent: React.FC = () => {
-    const { connected, disconnect } = useWallet();
+    const { disconnect, pkh } = useBeacon();
     return (
         <Navbar bg="light" expand="lg">
             <Container fluid>
                 <Navbar.Brand>NewsFakeToken</Navbar.Brand>
                 <Nav className="justify-content-end">
-                    {connected && (
+                    {pkh && (
                         <Nav>
                             <Navbar.Text>
                                 Connected as <AddressComponent />
@@ -51,7 +48,8 @@ const NavBarComponent: React.FC = () => {
 };
 
 const LoginComponent: React.FC = () => {
-    const { connect } = useWallet();
+    const { connect } = useBeacon();
+
     return (
         <>
             <h2 className="mt-5">Welcome to NewsFakeToken!</h2>
@@ -60,7 +58,7 @@ const LoginComponent: React.FC = () => {
                 the validity of the news, hence avoiding you to relay fake news.
             </p>
             <p>To access it, you must first login with your wallet.</p>
-            <Button variant="primary" onClick={connect}>
+            <Button variant="primary" onClick={() => connect(DEFAULT_NETWORK).catch(console.log)}>
                 <FontAwesomeIcon icon={faSignInAlt} /> Sign in
             </Button>
         </>
@@ -126,7 +124,7 @@ function InvalidModal(props: any): JSX.Element {
 }
 
 function App(): JSX.Element {
-    const { connected, activeAccount, client } = useWallet();
+    const { pkh } = useBeacon();
     const [invalid, SetInvalid] = useState(false);
     const headers = [
         { name: 'Token ID', selector: 'tokenId', grow: 0 },
@@ -158,8 +156,8 @@ function App(): JSX.Element {
             </header>
             <main>
                 <Container>
-                    {!connected && <LoginComponent />}
-                    {connected && (
+                    {!pkh && <LoginComponent />}
+                    {pkh && (
                         <>
                             <h2 className="mt-5">Minted NewsFT</h2>
                             <p>The address of the smart contract is : {contractAddress}</p>
