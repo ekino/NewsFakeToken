@@ -5,9 +5,8 @@ import Button from 'react-bootstrap/Button';
 import InputGroup from 'react-bootstrap/InputGroup';
 import ListGroup from 'react-bootstrap/ListGroup';
 import DeleteIcon from '@material-ui/icons/Delete';
-import { ListItemText } from '@material-ui/core';
-import { ListItemSecondaryAction } from '@material-ui/core';
-import { IconButton } from '@material-ui/core';
+import SwapHorizIcon from '@material-ui/icons/SwapHoriz';
+import { ListItemText, ListItemSecondaryAction, IconButton } from '@material-ui/core';
 
 function MintForm(): JSX.Element {
     const [validated, setValidated] = useState(false);
@@ -38,9 +37,16 @@ function MintForm(): JSX.Element {
         }
     };
 
-    const deleteItem = (index: any, evt: any): void => {
-        listNFTSource.splice(index, 1);
+    const deleteItem = (item: any, evt: any): void => {
+        listNFTSource.splice(
+            listNFTSource.findIndex((element: any) => element === item),
+            1,
+        );
         setState(evt);
+    };
+
+    const swapItem = (index: any, evt: any): void => {
+        alert('You want to swap this item');
     };
 
     return (
@@ -74,16 +80,23 @@ function MintForm(): JSX.Element {
                         </Button>
                     </InputGroup>
                     <ListGroup id="ListNFT">
-                        {listNFTSource.map((item: any, index: any) => (
-                            <ListGroup.Item variant="light" key={index}>
+                        {listNFTSource.map((item: any) => (
+                            <ListGroup.Item variant="light" key={item.id}>
                                 <ListItemText primary={item} />
                                 <ListItemSecondaryAction>
                                     <IconButton
                                         edge="end"
                                         aria-label="delete"
-                                        onClick={(evt) => deleteItem(index, evt)}
+                                        onClick={(evt) => deleteItem(item, evt)}
                                     >
                                         <DeleteIcon />
+                                    </IconButton>
+                                    <IconButton
+                                        edge="end"
+                                        aria-label="swap"
+                                        onClick={(evt) => swapItem(item, evt)}
+                                    >
+                                        <SwapHorizIcon />
                                     </IconButton>
                                 </ListItemSecondaryAction>
                             </ListGroup.Item>
