@@ -5,17 +5,24 @@ import Button from 'react-bootstrap/Button';
 import InputGroup from 'react-bootstrap/InputGroup';
 import ListGroup from 'react-bootstrap/ListGroup';
 import DeleteIcon from '@material-ui/icons/Delete';
-import { ListItemText } from '@material-ui/core';
-import { ListItemSecondaryAction } from '@material-ui/core';
-import { IconButton } from '@material-ui/core';
+import SwapHorizIcon from '@material-ui/icons/SwapHoriz';
+import { ListItemText, ListItemSecondaryAction, IconButton } from '@material-ui/core';
 
-function UpdateForm(props: any): JSX.Element {
+function UpdateForm({
+    NftName,
+    NftSources,
+    URL,
+}: {
+    NftName: string;
+    NftSources: string[];
+    URL: string;
+}): JSX.Element {
     const [validated, setValidated] = useState(false);
     const [state, setState] = useState(false);
-    const [NFT, setName] = useState(props.NftName);
+    const [NFT, setName] = useState(NftName);
     const [NftSource, setNftSource] = useState('');
-    const [url, setUrl] = useState(props.Url);
-    const [listNFTSource, setList] = useState(props.NftSources);
+    const [url, setUrl] = useState(URL);
+    const [listNFTSource, setList] = useState(NftSources);
 
     const handleSubmit = (event: any): void => {
         const form = event.currentTarget;
@@ -37,9 +44,16 @@ function UpdateForm(props: any): JSX.Element {
         setNftSource('');
     };
 
-    const deleteItem = (index: any, evt: any): void => {
-        listNFTSource.splice(index, 1);
+    const deleteItem = (item: any, evt: any): void => {
+        listNFTSource.splice(
+            listNFTSource.findIndex((element: any) => element === item),
+            1,
+        );
         setState(evt);
+    };
+
+    const swapItem = (index: any, evt: any): void => {
+        alert('You want to swap this item');
     };
 
     return (
@@ -80,16 +94,23 @@ function UpdateForm(props: any): JSX.Element {
                         </Button>
                     </InputGroup>
                     <ListGroup id="ListNFT">
-                        {listNFTSource.map((item: any, index: any) => (
-                            <ListGroup.Item variant="light" key={index}>
+                        {listNFTSource.map((item: any) => (
+                            <ListGroup.Item variant="light" key={item.id}>
                                 <ListItemText primary={item} />
                                 <ListItemSecondaryAction>
                                     <IconButton
                                         edge="end"
                                         aria-label="delete"
-                                        onClick={(evt) => deleteItem(index, evt)}
+                                        onClick={(evt) => deleteItem(item, evt)}
                                     >
                                         <DeleteIcon />
+                                    </IconButton>
+                                    <IconButton
+                                        edge="end"
+                                        aria-label="swap"
+                                        onClick={(evt) => swapItem(item, evt)}
+                                    >
+                                        <SwapHorizIcon />
                                     </IconButton>
                                 </ListItemSecondaryAction>
                             </ListGroup.Item>

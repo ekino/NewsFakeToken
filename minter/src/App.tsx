@@ -1,127 +1,14 @@
-import { Navbar, Nav, Container, Row, Col, Button, Badge, Modal } from 'react-bootstrap';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-    faPlusCircle,
-    faSignInAlt,
-    faSignOutAlt,
-    faTimesCircle,
-} from '@fortawesome/free-solid-svg-icons';
+import { Container, Row, Col } from 'react-bootstrap';
 import Datatable from 'react-data-table-component';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import contractAddress from '@newsfaketoken/contracts/deployments/NFTS_contract';
 import React, { useState } from 'react';
-import MintForm from './MintForm';
-import UpdateForm from './RemintForm';
 import useBeacon from './hooks/useBeacon';
+import InvalidModal from './components/InvalidModal';
+import MintButton from './components/MintButton';
+import NavBarComponent from './components/NavBar';
+import LoginComponent from './components/Login';
 import { DEFAULT_NETWORK, NETWORKS } from './defaults';
-
-const AddressComponent: React.FC = () => {
-    const { pkh } = useBeacon();
-    return (
-        <Badge pill bg="primary">
-            {pkh}
-        </Badge>
-    );
-};
-
-const NavBarComponent: React.FC = () => {
-    const { disconnect, pkh } = useBeacon();
-    return (
-        <Navbar bg="light" expand="lg">
-            <Container fluid>
-                <Navbar.Brand>NewsFakeToken</Navbar.Brand>
-                <Nav className="justify-content-end">
-                    {pkh && (
-                        <Nav>
-                            <Navbar.Text>
-                                Connected as <AddressComponent />
-                            </Navbar.Text>
-                            <Nav.Link onClick={disconnect}>
-                                <FontAwesomeIcon icon={faSignOutAlt} /> Disconnect
-                            </Nav.Link>
-                        </Nav>
-                    )}
-                </Nav>
-            </Container>
-        </Navbar>
-    );
-};
-
-const LoginComponent: React.FC = () => {
-    const { connect } = useBeacon();
-
-    return (
-        <>
-            <h2 className="mt-5">Welcome to NewsFakeToken!</h2>
-            <p className="lead">
-                This service will allow you to generate NFTs for your news, track sources and manage
-                the validity of the news, hence avoiding you to relay fake news.
-            </p>
-            <p>To access it, you must first login with your wallet.</p>
-            <Button variant="primary" onClick={() => connect(DEFAULT_NETWORK).catch(console.log)}>
-                <FontAwesomeIcon icon={faSignInAlt} /> Sign in
-            </Button>
-        </>
-    );
-};
-
-function MintButtonComponent(): JSX.Element {
-    const [show, setShow] = useState(false);
-
-    function handleClose(): void {
-        setShow(false);
-    }
-
-    function handleShow(): void {
-        setShow(true);
-    }
-
-    return (
-        <>
-            <Button variant="success" size="sm" onClick={handleShow}>
-                <FontAwesomeIcon icon={faPlusCircle} /> Mint news
-            </Button>
-            <Modal show={show} onHide={handleClose} centered>
-                <Modal.Header closeButton>
-                    <Modal.Title>Mint your news</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    <MintForm />
-                </Modal.Body>
-            </Modal>
-        </>
-    );
-}
-
-function InvalidModal(props: any): JSX.Element {
-    const [show, setShow] = useState(false);
-    const [nft, setnft] = useState([] as any);
-    function handleClose(): void {
-        setShow(false);
-    }
-    function handleShow(): void {
-        setShow(true);
-    }
-    return (
-        <>
-            <Button variant="outline-warning" size="sm" onClick={handleShow}>
-                <FontAwesomeIcon icon={faTimesCircle} /> Set Invalid
-            </Button>
-            <Modal show={show} onHide={handleClose} centered>
-                <Modal.Header closeButton>
-                    <Modal.Title>Update your news </Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    <UpdateForm
-                        NftName={props.nftName}
-                        NftSources={props.nftSource}
-                        Url={props.Url}
-                    />
-                </Modal.Body>
-            </Modal>
-        </>
-    );
-}
 
 function App(): JSX.Element {
     const { pkh } = useBeacon();
@@ -136,9 +23,10 @@ function App(): JSX.Element {
             name: 'Actions',
             button: true,
             minWidth: '150px',
-            cell: (row: any) => (
-                <InvalidModal nftName={row.tokenName} nftSource={row.sourcesNames} Url={row.url} />
-            ),
+            cell: (row: any): JSX.Element => {
+                const { tokenName, sourcesNames, url } = row;
+                return <InvalidModal nftName={tokenName} nftSource={sourcesNames} Url={url} />;
+            },
         },
     ];
     const data = [
@@ -147,7 +35,7 @@ function App(): JSX.Element {
         { tokenId: 3, tokenName: 'fowo', url: 'http://url1.com', sourcesNames: ['NFT1', 'NFT2'] },
     ];
 
-    const actionsMemo = React.useMemo(() => <MintButtonComponent />, []);
+    const actionsMemo = React.useMemo(() => <MintButton />, []);
 
     return (
         <>

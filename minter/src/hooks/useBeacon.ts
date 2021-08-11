@@ -1,10 +1,8 @@
 import { useCallback, useState } from 'react';
 import constate from 'constate';
-
 import { BeaconWallet } from '@taquito/beacon-wallet';
 import { PermissionScope, NetworkType } from '@airgap/beacon-sdk';
 import { TezosToolkit } from '@taquito/taquito';
-
 import { DEFAULT_NETWORK } from '../defaults';
 
 const options = {
