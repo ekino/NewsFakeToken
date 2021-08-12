@@ -31,3 +31,4 @@ To import keys, run:
 
 - https://github.com/KStasi/fa2-deployer
 - https://medium.com/ecad-labs-inc/how-to-mint-nfts-on-tezos-using-taquito-and-pinata-15a407078495
+- https://github.com/claudebarde/taquito-pinata-tezos-nft/
