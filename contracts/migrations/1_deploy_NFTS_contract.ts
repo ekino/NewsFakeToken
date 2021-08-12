@@ -2,25 +2,14 @@ import { TezosToolkit, MichelsonMap } from '@taquito/taquito';
 import { InMemorySigner } from '@taquito/signer';
 import { buf2hex } from '@taquito/utils';
 import saveContractAddress from '../helpers/saveContractAddress';
-import getConfig, { NetworkConfig } from '../config';
+import conf from '../config';
 import code from '../build/NFTS_contract.json';
-import getAccounts, { Account } from '../accounts';
 
-const alice: Account = getAccounts('dev')['alice'];
-const args = process.argv;
-const env = args[2];
-
-if (env == undefined || !['dev', 'testnet', 'next'].includes(env)) {
-    console.log('please supply valid env.');
-    process.exit(1);
-}
-
-const conf: NetworkConfig = getConfig(env);
 const Tezos = new TezosToolkit(conf.node);
 
 const deploy = async () => {
     try {
-        const signer = await InMemorySigner.fromSecretKey(conf.secretKey);
+        const signer = await InMemorySigner.fromSecretKey(conf.accounts.alice.sk);
         Tezos.setProvider({ signer });
 
         const storage = {
@@ -50,7 +39,7 @@ const deploy = async () => {
             }),
             token_metadata: new MichelsonMap(),
             next_token_id: 0,
-            admin: alice.pkh,
+            admin: conf.accounts.alice.pkh,
         };
 
         const op = await Tezos.contract.originate({

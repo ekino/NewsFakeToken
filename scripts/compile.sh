@@ -30,8 +30,8 @@ else
 fi
 
 LIGO_IMAGE=ligolang/ligo:0.22.0
-SOURCE_DIR=$(pwd)/src
-OUTPUT_DIR=$(pwd)/build
+SOURCE_DIR=$(pwd)/contracts/src
+OUTPUT_DIR=$(pwd)/contracts/build
 
 run() {
     if [ ! -d "${OUTPUT_DIR}" ];

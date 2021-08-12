@@ -17,6 +17,7 @@ build
 npm-debug.log*
 
 # contracts
+/contracts/.env
 /contracts/deployments
 !/contracts/deployments/.keep
 *.log

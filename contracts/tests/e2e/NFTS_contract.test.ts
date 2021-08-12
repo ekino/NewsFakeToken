@@ -4,13 +4,11 @@ import { BigMapAbstraction, TezosToolkit } from '@taquito/taquito';
 import { BigNumber } from 'bignumber.js';
 import { InMemorySigner } from '@taquito/signer';
 import contractAddress from '../../deployments/NFTS_contract';
-import getConfig, { NetworkConfig } from '../../config';
-import getAccounts, { Account } from '../../accounts';
+import conf from '../../config';
 import { bytes2Char, char2Bytes } from '@taquito/utils';
 
-const alice: Account = getAccounts('dev')['alice'];
-
-const conf: NetworkConfig = getConfig('dev');
+const { accounts } = conf;
+const { alice } = accounts;
 const Tezos = new TezosToolkit(conf.node);
 
 type Storage = {

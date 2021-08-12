@@ -1,0 +1,10 @@
+version: "3"
+
+services:
+  sandbox:
+    image: "tqtezos/flextesa:20210602"
+    command: flobox start
+    ports:
+      - "8732:20000"
+    environment:
+      - block_time=1
