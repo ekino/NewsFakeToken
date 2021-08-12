@@ -4,7 +4,7 @@
   "private": true,
   "license": "MIT",
   "scripts": {
-    "contracts:compile": "yarn workspace @newsfaketoken/contracts compile",
+    "backend:start": "yarn workspace @newsfaketoken/backend start",
     "contracts:deploy": "yarn workspace @newsfaketoken/contracts deploy",
     "contracts:test": "yarn workspace @newsfaketoken/contracts test",
     "minter:start": "yarn workspace @newsfaketoken/minter start",
@@ -12,12 +12,10 @@
     "minter:lint": "yarn minter:lint:eslint && yarn minter:lint:prettier && yarn minter:lint:types",
     "minter:lint:eslint": "yarn workspace @newsfaketoken/minter eslint . --ext ts,tsx",
     "minter:lint:prettier": "yarn workspace @newsfaketoken/minter prettier -c src/**/*.{ts,tsx}",
-    "minter:lint:types": "yarn workspace @newsfaketoken/minter tsc --noEmit",
-    "sandbox:shell": "docker exec -it dev-sandbox ash",
-    "sandbox:start": "docker run --rm --name dev-sandbox --detach -p 8732:20000 tqtezos/flextesa:20210602 flobox start",
-    "sandbox:stop": "docker kill dev-sandbox"
+    "minter:lint:types": "yarn workspace @newsfaketoken/minter tsc --noEmit"
   },
   "workspaces": [
+    "backend",
     "contracts",
     "minter"
   ]

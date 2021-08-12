@@ -1,0 +1,17 @@
+version: "3"
+
+services:
+  node:
+    image: "ekino/ci-node:14-2021.07.31"
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "3"
+    ports:
+      - "3000:3000"
+      - "3001:3001"
+      - "8080:8080"
+    volumes:
+      - ./:/workspace
+    working_dir: /workspace
+    stdin_open: true

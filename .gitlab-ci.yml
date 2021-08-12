@@ -1,0 +1,26 @@
+# include:
+#   - template: Security/Secret-Detection.gitlab-ci.yml
+
+stages: [test]
+
+.job:
+  tags: [docker, ekino, france]
+
+test:
+  stage: test
+  extends: .job
+  image: ekino/ci-dind:2021.07.31
+  services:
+    - ekino/ci-dind:2021.07.31
+  variables:
+    DOCKER_TLS_CERTDIR: ""
+    DOCKER_DRIVER: overlay2
+    DOCKER_HOST: "tcp://ekino__ci-dind:2375"
+  before_script:
+    - make infra-up
+    - make install
+  script:
+    - make contracts-compile
+    - make contracts-deploy
+    - make contracts-test
+    - make minter-lint
