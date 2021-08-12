@@ -38,10 +38,14 @@ function UpdateForm({
     };
 
     const handleClick = (evt: any): void => {
-        listNFTSource.push(NftSource);
-        setList(listNFTSource);
-        setState(evt);
-        setNftSource('');
+        if (NftSource === '') {
+            alert('Please enter a source !');
+        } else {
+            listNFTSource.push(NftSource);
+            setList(listNFTSource);
+            setState(evt);
+            setNftSource('');
+        }
     };
 
     const deleteItem = (item: any, evt: any): void => {
