@@ -7,18 +7,22 @@ import ListGroup from 'react-bootstrap/ListGroup';
 import DeleteIcon from '@material-ui/icons/Delete';
 import SwapHorizIcon from '@material-ui/icons/SwapHoriz';
 import { ListItemText, ListItemSecondaryAction, IconButton } from '@material-ui/core';
+import useBeacon from '../hooks/useBeacon';
 
 function MintForm(): JSX.Element {
     const [validated, setValidated] = useState(false);
     const [state, setState] = useState(false);
     const [NFT, setname] = useState('');
     const [listNFTSource, setList] = useState([] as any);
+    const { upload } = useBeacon();
 
     const handleSubmit = (event: any): void => {
         const form = event.currentTarget;
         if (form.checkValidity() === false) {
             event.preventDefault();
             event.stopPropagation();
+        } else {
+            upload();
         }
         setValidated(true);
     };
@@ -29,7 +33,7 @@ function MintForm(): JSX.Element {
 
     const handleClick = (evt: any): void => {
         if (NFT === '') {
-            alert('Please enter a source');
+            alert('Please enter a source !');
         } else {
             listNFTSource.push(NFT);
             setState(evt);
