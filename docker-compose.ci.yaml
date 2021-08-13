@@ -1,17 +1,15 @@
 version: "3"
 
 services:
+  sandbox:
+    image: "tqtezos/flextesa:20210602"
+    command: flobox start
+
   node:
     image: "ekino/ci-node:14-2021.07.31"
-    logging:
-      options:
-        max-size: "10m"
-        max-file: "3"
-    ports:
-      - "3000:3000"
-      - "3001:3001"
-      - "8080:8080"
+    depends_on:
+      - "sandbox"
     volumes:
       - ./:/workspace
     working_dir: /workspace
-    stdin_open: true
+    command: ["tail", "-f", "/dev/null"] # keeps container alive
