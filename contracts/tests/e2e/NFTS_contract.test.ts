@@ -5,6 +5,7 @@ import { BigNumber } from 'bignumber.js';
 import { InMemorySigner } from '@taquito/signer';
 import contractAddress from '../../deployments/NFTS_contract';
 import conf from '../../config';
+import metadata from '../../metadata.json';
 import { bytes2Char, char2Bytes } from '@taquito/utils';
 
 const { accounts } = conf;
@@ -30,11 +31,10 @@ describe('Token', async () => {
     it('should check initial storage', async () => {
         const instance = await Tezos.contract.at(contractAddress);
         const storage: Storage = await instance.storage();
-        const { metadata } = storage;
-        assert.strictEqual(bytes2Char(await metadata.get('')), 'tezos-storage:contents');
+        assert.strictEqual(bytes2Char(await storage.metadata.get('')), 'tezos-storage:contents');
         assert.strictEqual(
-            bytes2Char(await metadata.get('contents')),
-            '{"name":"News Fake Token","description":"FA2 NFT Contract News Articles Minter","version":"beta","license":{"name":"MIT"},"authors":"ekino <blockchain@ekino.com>","homepage":"htpps://newsfaketoken.web.app","source":{"tools":"cameligo","location":"https://github.com/ekino/NewsFakeToken"},"interfaces":["TZIP-012","TZIP-016"],"permissions":{"operator":"no-transfer"}}',
+            bytes2Char(await storage.metadata.get('contents')),
+            JSON.stringify(metadata),
         );
     });
 

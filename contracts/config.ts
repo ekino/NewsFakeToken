@@ -43,7 +43,7 @@ const config: Config = {
         accounts: devAccounts,
     },
     testnet: {
-        node: 'https://testnet-tezos.giganode.io/',
+        node: 'https://florencenet.smartpy.io',
         accounts: {
             alice: {
                 pkh: 'tz1UxbPFjP22Hmc4tz2cxEXUx3cz17W4L7ow',

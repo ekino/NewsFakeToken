@@ -1,12 +1,16 @@
 import { Container, Row, Col } from 'react-bootstrap';
+import React, { FC, useEffect, useReducer, useMemo, useState } from 'react';
 import Datatable from 'react-data-table-component';
-import React from 'react';
-// eslint-disable-next-line import/no-extraneous-dependencies
-import contractAddress from '@newsfaketoken/contracts/deployments/NFTS_contract';
 import InvalidModal from './InvalidModal';
 import MintButton from './MintButton';
 
-function DataTable(): JSX.Element {
+interface Props {
+    activeAccountAddress: string;
+}
+
+const MyTokens: FC<Props> = ({ ...props }) => {
+    const { activeAccountAddress } = props;
+
     const headers = [
         { name: 'Token ID', selector: 'tokenId', grow: 0 },
         { name: 'Token Name', selector: 'tokenName', grow: 1 },
@@ -34,7 +38,6 @@ function DataTable(): JSX.Element {
     return (
         <Container>
             <h2 className="mt-5">Minted NewsFT</h2>
-            <p>The address of the smart contract is : {contractAddress}</p>
             <p className="lead">
                 Those are your minted NewsFT. You can see their status, and invalid them here if
                 need be. Click on &quot;Mint&quot; to create a new NewsFT.
@@ -52,6 +55,6 @@ function DataTable(): JSX.Element {
             </Row>
         </Container>
     );
-}
+};
 
-export default DataTable;
+export default MyTokens;
