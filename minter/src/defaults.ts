@@ -1,5 +1,8 @@
 import { NetworkType } from '@airgap/beacon-sdk';
 
+const DEFAULT_NETWORK_INDEX_ENV: string = process.env.REACT_APP_DEFAULT_NETWORK_INDEX ?? '';
+const DEFAULT_NETWORK_INDEX: number = parseInt(DEFAULT_NETWORK_INDEX_ENV, 10);
+
 export const NETWORKS = [
     {
         id: NetworkType.CUSTOM,
@@ -17,4 +20,4 @@ export const NETWORKS = [
     },
 ];
 
-export const DEFAULT_NETWORK = NETWORKS[0];
+export const DEFAULT_NETWORK = NETWORKS[DEFAULT_NETWORK_INDEX];

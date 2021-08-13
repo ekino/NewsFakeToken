@@ -1,12 +1,12 @@
 import React from 'react';
 import { Badge } from 'react-bootstrap';
-import useBeacon from '../hooks/useBeacon';
+import { useWallet } from '@tezos-contrib/react-wallet-provider';
 
 export const AddressComponent: React.FC = () => {
-    const { pkh } = useBeacon();
+    const { activeAccount } = useWallet();
     return (
         <Badge pill bg="primary">
-            {pkh}
+            {activeAccount?.address}
         </Badge>
     );
 };

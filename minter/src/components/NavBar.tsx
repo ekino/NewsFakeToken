@@ -2,17 +2,17 @@ import React from 'react';
 import { Navbar, Nav, Container } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
-import useBeacon from '../hooks/useBeacon';
+import { useWallet } from '@tezos-contrib/react-wallet-provider';
 import { AddressComponent } from './Address';
 
 export const NavBarComponent: React.FC = () => {
-    const { disconnect, pkh } = useBeacon();
+    const { connected, disconnect } = useWallet();
     return (
         <Navbar bg="light" expand="lg">
             <Container fluid>
                 <Navbar.Brand>NewsFakeToken</Navbar.Brand>
                 <Nav className="justify-content-end">
-                    {pkh && (
+                    {connected && (
                         <Nav>
                             <Navbar.Text>
                                 Connected as <AddressComponent />
