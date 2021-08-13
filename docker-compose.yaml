@@ -6,5 +6,3 @@ services:
     command: flobox start
     ports:
       - "8732:20000"
-    environment:
-      - block_time=1

@@ -22,5 +22,6 @@ test:
   script:
     - make contracts-compile
     - make contracts-deploy
+    - sleep 5
     - make contracts-test
     - make minter-lint
