@@ -2,7 +2,7 @@
 # yarn lockfile v1
 
 
-"@airgap/beacon-sdk@^2.2.7", "@airgap/beacon-sdk@^2.3.0":
+"@airgap/beacon-sdk@^2.3.0", "@airgap/beacon-sdk@^2.3.1":
   version "2.3.1"
   resolved "https://registry.yarnpkg.com/@airgap/beacon-sdk/-/beacon-sdk-2.3.1.tgz#555a76b85854914a0789eca72e591a716c1f0a21"
   integrity sha512-KhlerqRlI9LxkxY6sq5ar5g6KuzEEGEacnMg7AWxL/Pdq3WXGfMrdzVOO+4wOgB8f1/A8MRn0l/zjwAFZqAvYA==
@@ -2010,6 +2010,11 @@
   integrity sha512-IR0iWbFkgd56Bu5ZI/ej8yQwrkCv8Qydx6RzwbKz9faXazR/+5tvYKsZQgyXJiwgpcva127YO6JcWy7YlCfofQ==
   dependencies:
     "@babel/runtime" "^7.12.5"
+
+"@tezos-contrib/react-wallet-provider@^1.0.0-alpha.11":
+  version "1.0.0-alpha.11"
+  resolved "https://registry.yarnpkg.com/@tezos-contrib/react-wallet-provider/-/react-wallet-provider-1.0.0-alpha.11.tgz#61e032b9f87a5988b0557338e881ecdd0b9aa20e"
+  integrity sha512-eOvp1wtE1UiYyzZQjmrXcOnkh1TqRTvKzHt+Nkt5BDgqULoxL3D8jKZRO4/XhJglW0yJgol6azbrCmVuf9S7Ng==
 
 "@tootallnate/once@1":
   version "1.1.2"

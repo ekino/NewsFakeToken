@@ -2,11 +2,10 @@ import React from 'react';
 import { Button } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSignInAlt } from '@fortawesome/free-solid-svg-icons';
-import useBeacon from '../hooks/useBeacon';
-import { DEFAULT_NETWORK } from '../defaults';
+import { useWallet } from '@tezos-contrib/react-wallet-provider';
 
 export const LoginComponent: React.FC = () => {
-    const { connect } = useBeacon();
+    const { connect } = useWallet();
     return (
         <>
             <h2 className="mt-5">Welcome to NewsFakeToken!</h2>
@@ -15,7 +14,7 @@ export const LoginComponent: React.FC = () => {
                 the validity of the news, hence avoiding you to relay fake news.
             </p>
             <p>To access it, you must first login with your wallet.</p>
-            <Button variant="primary" onClick={() => connect(DEFAULT_NETWORK).catch(console.log)}>
+            <Button variant="primary" onClick={() => connect()}>
                 <FontAwesomeIcon icon={faSignInAlt} /> Sign in
             </Button>
         </>

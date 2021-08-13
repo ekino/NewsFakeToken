@@ -1,12 +1,12 @@
 import { Container } from 'react-bootstrap';
 import React from 'react';
-import useBeacon from './hooks/useBeacon';
+import { useWallet } from '@tezos-contrib/react-wallet-provider';
 import NavBarComponent from './components/NavBar';
 import LoginComponent from './components/Login';
 import DataTable from './components/DataTable';
 
 function App(): JSX.Element {
-    const { pkh } = useBeacon();
+    const { connected } = useWallet();
     return (
         <>
             <header>
@@ -14,8 +14,8 @@ function App(): JSX.Element {
             </header>
             <main>
                 <Container>
-                    {!pkh && <LoginComponent />}
-                    {pkh && <DataTable />}
+                    {!connected && <LoginComponent />}
+                    {connected && <DataTable />}
                 </Container>
             </main>
         </>

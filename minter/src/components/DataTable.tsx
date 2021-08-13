@@ -5,7 +5,6 @@ import React from 'react';
 import contractAddress from '@newsfaketoken/contracts/deployments/NFTS_contract';
 import InvalidModal from './InvalidModal';
 import MintButton from './MintButton';
-import useBeacon from '../hooks/useBeacon';
 
 function DataTable(): JSX.Element {
     const headers = [

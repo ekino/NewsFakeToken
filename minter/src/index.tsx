@@ -1,15 +1,15 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { UseBeaconProvider } from './hooks/useBeacon';
+import { WalletProvider } from '@tezos-contrib/react-wallet-provider';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 
 ReactDOM.render(
     <React.StrictMode>
-        <UseBeaconProvider>
+        <WalletProvider name="newsfaketoken" clientType="beacon">
             <App />
-        </UseBeaconProvider>
+        </WalletProvider>
     </React.StrictMode>,
     document.getElementById('root'),
 );
