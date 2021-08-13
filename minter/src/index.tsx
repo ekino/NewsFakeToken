@@ -7,7 +7,7 @@ import reportWebVitals from './reportWebVitals';
 
 ReactDOM.render(
     <React.StrictMode>
-        <WalletProvider name="newsfaketoken" clientType="beacon">
+        <WalletProvider name="newsfaketoken" clientType="beacon" network="GRANADANET">
             <App />
         </WalletProvider>
     </React.StrictMode>,
