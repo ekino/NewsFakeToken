@@ -1,12 +1,17 @@
 import React, { useState } from 'react';
-import Container from 'react-bootstrap/Container';
-import Form from 'react-bootstrap/Form';
-import Button from 'react-bootstrap/Button';
-import InputGroup from 'react-bootstrap/InputGroup';
-import ListGroup from 'react-bootstrap/ListGroup';
+import {
+    Container,
+    Form,
+    Button,
+    InputGroup,
+    ListGroup,
+    OverlayTrigger,
+    Tooltip,
+} from 'react-bootstrap';
 import DeleteIcon from '@material-ui/icons/Delete';
 import SwapHorizIcon from '@material-ui/icons/SwapHoriz';
 import { ListItemText, ListItemSecondaryAction, IconButton } from '@material-ui/core';
+import { RepostInfo } from '../hooks/upload';
 
 function UpdateForm({
     NftName,
@@ -25,15 +30,16 @@ function UpdateForm({
     const [url, setUrl] = useState(URL);
     const [newUrl, setNewUrl] = useState('');
     const [listNFTSource, setList] = useState(NftSources);
+    const doMint = RepostInfo(NFT, url, oldTokenId, listNFTSource);
 
     const handleSubmit = (event: any): void => {
         const form = event.currentTarget;
+        event.preventDefault();
+        event.stopPropagation();
         if (form.checkValidity() === false) {
-            event.preventDefault();
-            event.stopPropagation();
+            alert('The form is not well completed');
         } else {
-            console.log('TODO');
-            // renvoyer le titre, la nouvelle url, les sources et l'id de l'ancien token -> back
+            doMint('e');
         }
         setValidated(true);
     };
@@ -77,6 +83,12 @@ function UpdateForm({
         <Container>
             <Form noValidate validated={validated} onSubmit={handleSubmit}>
                 <Form.Group>
+                    <Form.Label>
+                        <h2>Complete this form to update your news.</h2>
+                        In this form you need to modify the title,add the new url address of your
+                        article and add/swap/delete the sources of the article.{' '}
+                        <b>Be sure to write the right IDs.</b>
+                    </Form.Label>
                     <Form.Label>Title of the article</Form.Label>
                     <Form.Control required type="string" value={NFT} onChange={handleChangeNft} />
                 </Form.Group>
@@ -104,38 +116,62 @@ function UpdateForm({
                             type="text"
                             placeholder="NFT source of the article"
                             value={NftSource}
-                            onChange={handleChangeNft}
+                            onChange={handleChangeNftSource}
                         />
                         <Form.Control.Feedback type="invalid">
                             Please enter a source
                         </Form.Control.Feedback>
-                        <Button
-                            variant="outline-secondary"
-                            id="button-addon2"
-                            onClick={handleClick}
+                        <OverlayTrigger
+                            overlay={
+                                <Tooltip id="tooltip-disabled">
+                                    Add a source to this article
+                                </Tooltip>
+                            }
                         >
-                            Add source
-                        </Button>
+                            <Button
+                                variant="outline-secondary"
+                                id="button-addon2"
+                                onClick={handleClick}
+                            >
+                                Add source
+                            </Button>
+                        </OverlayTrigger>
                     </InputGroup>
                     <ListGroup id="ListNFT">
                         {listNFTSource.map((item: any) => (
                             <ListGroup.Item variant="light" key={item.id}>
                                 <ListItemText primary={item} />
                                 <ListItemSecondaryAction>
-                                    <IconButton
-                                        edge="end"
-                                        aria-label="delete"
-                                        onClick={(evt) => deleteItem(item, evt)}
+                                    <OverlayTrigger
+                                        overlay={
+                                            <Tooltip id="tooltip-disabled">
+                                                Swap this source against another
+                                            </Tooltip>
+                                        }
                                     >
-                                        <DeleteIcon />
-                                    </IconButton>
-                                    <IconButton
-                                        edge="end"
-                                        aria-label="swap"
-                                        onClick={(evt) => swapItem(item, evt)}
+                                        <IconButton
+                                            edge="end"
+                                            aria-label="swap"
+                                            onClick={(evt) => swapItem(item, evt)}
+                                        >
+                                            <SwapHorizIcon />
+                                        </IconButton>
+                                    </OverlayTrigger>
+                                    <OverlayTrigger
+                                        overlay={
+                                            <Tooltip id="tooltip-disabled">
+                                                Delete this source
+                                            </Tooltip>
+                                        }
                                     >
-                                        <SwapHorizIcon />
-                                    </IconButton>
+                                        <IconButton
+                                            edge="end"
+                                            aria-label="delete"
+                                            onClick={(evt) => deleteItem(item, evt)}
+                                        >
+                                            <DeleteIcon />
+                                        </IconButton>
+                                    </OverlayTrigger>
                                 </ListItemSecondaryAction>
                             </ListGroup.Item>
                         ))}

@@ -24,27 +24,23 @@ export const NavBarComponent: React.FC = () => {
                 <Nav className={getNavLinkClass('/about')}>
                     <Link to="/about">About</Link>
                 </Nav>
-                <Nav className="justify-content-end">
-                    {connected ? (
-                        <>
-                            <Nav className={getNavLinkClass('/my-tokens')}>
-                                <Link to="/my-tokens">My Tokens</Link>
-                            </Nav>
-
-                            <Nav>
-                                <Navbar.Text>
-                                    Connected as <AddressComponent />
-                                </Navbar.Text>
-
-                                <Nav.Link onClick={disconnect}>
-                                    <FontAwesomeIcon icon={faSignOutAlt} /> Disconnect
-                                </Nav.Link>
-                            </Nav>
-                        </>
-                    ) : (
-                        <LoginComponent />
-                    )}
-                </Nav>
+                {connected ? (
+                    <>
+                        <Nav className={getNavLinkClass('/my-tokens')}>
+                            <Link to="/my-tokens">My Tokens</Link>
+                        </Nav>
+                        <Nav>
+                            <Navbar.Text>
+                                Connected as <AddressComponent />
+                            </Navbar.Text>
+                            <Nav.Link onClick={disconnect}>
+                                <FontAwesomeIcon icon={faSignOutAlt} /> Disconnect
+                            </Nav.Link>
+                        </Nav>
+                    </>
+                ) : (
+                    <LoginComponent />
+                )}
             </Container>
         </Navbar>
     );

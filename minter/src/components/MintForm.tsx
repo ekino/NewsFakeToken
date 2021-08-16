@@ -1,9 +1,14 @@
 import React, { useState } from 'react';
-import Container from 'react-bootstrap/Container';
-import Form from 'react-bootstrap/Form';
-import Button from 'react-bootstrap/Button';
-import InputGroup from 'react-bootstrap/InputGroup';
-import ListGroup from 'react-bootstrap/ListGroup';
+import './MinterForm.css';
+import {
+    Container,
+    Form,
+    Button,
+    InputGroup,
+    ListGroup,
+    OverlayTrigger,
+    Tooltip,
+} from 'react-bootstrap';
 import DeleteIcon from '@material-ui/icons/Delete';
 import { ListItemText, ListItemSecondaryAction, IconButton } from '@material-ui/core';
 import { Upload, PostInfo } from '../hooks/upload';
@@ -70,7 +75,13 @@ function MintForm(): JSX.Element {
                 method="post"
             >
                 <Form.Group className="mb-3" controlId="Url">
-                    <Form.Label>Title of the article</Form.Label>
+                    <Form.Label>
+                        <h2>Complete this form to mint your news.</h2>
+                        In this form you need to complete the title, the url address of your article
+                        and find the id of the articles you are using as sources.{' '}
+                        <b>Be sure to write the right IDs.</b>
+                    </Form.Label>
+                    <Form.Label control-label>Title of the article</Form.Label>
                     <Form.Control
                         required
                         type="string"
@@ -107,26 +118,42 @@ function MintForm(): JSX.Element {
                         <Form.Control.Feedback type="invalid">
                             Please enter a source
                         </Form.Control.Feedback>
-                        <Button
-                            variant="outline-secondary"
-                            id="button-addon2"
-                            onClick={handleClick}
+                        <OverlayTrigger
+                            overlay={
+                                <Tooltip id="tooltip-disabled">
+                                    Add a source to this article
+                                </Tooltip>
+                            }
                         >
-                            Add source
-                        </Button>
+                            <Button
+                                variant="outline-secondary"
+                                id="button-addon2"
+                                onClick={handleClick}
+                            >
+                                Add source
+                            </Button>
+                        </OverlayTrigger>
                     </InputGroup>
                     <ListGroup id="ListNFT">
                         {listNFTSource.map((item: any) => (
                             <ListGroup.Item variant="light" key={item}>
                                 <ListItemText primary={item} />
                                 <ListItemSecondaryAction>
-                                    <IconButton
-                                        edge="end"
-                                        aria-label="delete"
-                                        onClick={(evt) => deleteItem(item, evt)}
+                                    <OverlayTrigger
+                                        overlay={
+                                            <Tooltip id="tooltip-disabled">
+                                                Delete this source
+                                            </Tooltip>
+                                        }
                                     >
-                                        <DeleteIcon />
-                                    </IconButton>
+                                        <IconButton
+                                            edge="end"
+                                            aria-label="delete"
+                                            onClick={(evt) => deleteItem(item, evt)}
+                                        >
+                                            <DeleteIcon />
+                                        </IconButton>
+                                    </OverlayTrigger>
                                 </ListItemSecondaryAction>
                             </ListGroup.Item>
                         ))}
