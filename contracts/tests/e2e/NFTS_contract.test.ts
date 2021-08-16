@@ -40,10 +40,28 @@ describe('Token', async () => {
 
     it('should mint', async () => {
         const instance = await Tezos.contract.at(contractAddress);
-        const op = await instance.methods.mint(char2Bytes('ipfs://dududududu'), alice.pkh).send();
+
+        const op = await instance.methods
+            .mint(char2Bytes('ipfs://QmaJf7oHy2vqhFHt2HFCxvgSBuyWLBCwETXFmmNExYwoAv'), alice.pkh)
+            .send();
         await op.confirmation(1, 1);
-        const storage: Storage = await instance.storage();
-        const list: BigNumber[] = await storage.reverse_ledger.get(alice.pkh);
-        assert.strictEqual(list.length, 1);
+    });
+
+    it('should mint', async () => {
+        const instance = await Tezos.contract.at(contractAddress);
+
+        const op = await instance.methods
+            .mint(char2Bytes('ipfs://QmeirRzdNfLHvfQi3tWDjUv2iBc8iqgjEXota9Nq7EDNp4'), alice.pkh)
+            .send();
+        await op.confirmation(1, 1);
+    });
+
+    it('should mint', async () => {
+        const instance = await Tezos.contract.at(contractAddress);
+
+        const op = await instance.methods
+            .mint(char2Bytes('ipfs://QmbRaeD2ybA2iQJe6u2b4HGMvqBH4w3dQiaKT7n3c7uyzN'), alice.pkh)
+            .send();
+        await op.confirmation(1, 1);
     });
 });

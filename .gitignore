@@ -16,6 +16,9 @@ build
 
 npm-debug.log*
 
+# backend
+/backend/.env
+
 # contracts
 /contracts/.env
 /contracts/deployments
