@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useReducer } from 'react';
+import { FC, useEffect, useReducer } from 'react';
 import { Row, Spinner } from 'react-bootstrap';
 import { getAllTokens } from '../services/contract';
 import { Action, dataFetchReducer } from '../services/reducer';

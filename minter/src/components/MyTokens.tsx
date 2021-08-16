@@ -1,5 +1,6 @@
 import { Container, Row, Col } from 'react-bootstrap';
-import React, { FC, useEffect, useReducer, useMemo, useState } from 'react';
+import { FC, useEffect, useReducer, useMemo, useState } from 'react';
+import * as React from 'react';
 import Datatable from 'react-data-table-component';
 import InvalidModal from './InvalidModal';
 import MintButton from './MintButton';

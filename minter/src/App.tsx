@@ -1,5 +1,4 @@
 import { Container } from 'react-bootstrap';
-import React from 'react';
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
 import { useWallet } from '@tezos-contrib/react-wallet-provider';
 import NavBarComponent from './components/NavBar';
