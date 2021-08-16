@@ -1,4 +1,4 @@
-import React from 'react';
+import { StrictMode } from 'react';
 import ReactDOM from 'react-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { WalletProvider, WalletProviderProps } from '@tezos-contrib/react-wallet-provider';
@@ -10,11 +10,11 @@ const NETWORK: WalletProviderProps['network'] =
     network.toUpperCase() as WalletProviderProps['network'];
 
 ReactDOM.render(
-    <React.StrictMode>
+    <StrictMode>
         <WalletProvider name="newsfaketoken" clientType="beacon" network={NETWORK}>
             <App />
         </WalletProvider>
-    </React.StrictMode>,
+    </StrictMode>,
     document.getElementById('root'),
 );
 

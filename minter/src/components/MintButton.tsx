@@ -1,5 +1,5 @@
 import { Button, Modal } from 'react-bootstrap';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlusCircle } from '@fortawesome/free-solid-svg-icons';
 import MintForm from './MintForm';

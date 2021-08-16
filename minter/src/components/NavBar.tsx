@@ -1,4 +1,4 @@
-import React from 'react';
+import { FC } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Navbar, Nav, Container } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -7,7 +7,7 @@ import { useWallet } from '@tezos-contrib/react-wallet-provider';
 import { AddressComponent } from './Address';
 import LoginComponent from './Login';
 
-export const NavBarComponent: React.FC = () => {
+export const NavBarComponent: FC = () => {
     const { connected, disconnect } = useWallet();
     const { pathname } = useLocation();
 
