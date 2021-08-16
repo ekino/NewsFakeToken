@@ -18,10 +18,12 @@ function UpdateForm({
     URL: string;
 }): JSX.Element {
     const [validated, setValidated] = useState(false);
+    const [oldTokenId, setOldTokenId] = useState('');
     const [state, setState] = useState(false);
-    const [NFT, setName] = useState(NftName);
+    const [NFT, setNft] = useState(NftName);
     const [NftSource, setNftSource] = useState('');
     const [url, setUrl] = useState(URL);
+    const [newUrl, setNewUrl] = useState('');
     const [listNFTSource, setList] = useState(NftSources);
 
     const handleSubmit = (event: any): void => {
@@ -29,12 +31,23 @@ function UpdateForm({
         if (form.checkValidity() === false) {
             event.preventDefault();
             event.stopPropagation();
+        } else {
+            console.log('TODO');
+            // renvoyer le titre, la nouvelle url, les sources et l'id de l'ancien token -> back
         }
         setValidated(true);
     };
 
-    const handleChange = (event: any): void => {
+    const handleChangeNftSource = (event: any): void => {
         setNftSource(event.target.value);
+    };
+
+    const handleChangeUrl = (event: any): void => {
+        setNewUrl(event.target.value);
+    };
+
+    const handleChangeNft = (event: any): void => {
+        setNft(event.target.value);
     };
 
     const handleClick = (evt: any): void => {
@@ -64,7 +77,8 @@ function UpdateForm({
         <Container>
             <Form noValidate validated={validated} onSubmit={handleSubmit}>
                 <Form.Group>
-                    <Form.Label>Title : {NFT}</Form.Label>
+                    <Form.Label>Title of the article</Form.Label>
+                    <Form.Control required type="string" value={NFT} onChange={handleChangeNft} />
                 </Form.Group>
                 <Form.Group className="mb-3" controlId="OldUrl">
                     <Form.Label>Url of the article : </Form.Label>
@@ -72,7 +86,13 @@ function UpdateForm({
                 </Form.Group>
                 <Form.Group className="mb-3" controlId="NewUrl">
                     <Form.Label>Url of the new article :</Form.Label>
-                    <Form.Control required type="url" placeholder="url of the new article" />
+                    <Form.Control
+                        required
+                        type="url"
+                        placeholder="Url of the new article"
+                        value={newUrl}
+                        onChange={handleChangeUrl}
+                    />
                     <Form.Control.Feedback type="invalid">
                         Please enter an url
                     </Form.Control.Feedback>
@@ -84,7 +104,7 @@ function UpdateForm({
                             type="text"
                             placeholder="NFT source of the article"
                             value={NftSource}
-                            onChange={handleChange}
+                            onChange={handleChangeNft}
                         />
                         <Form.Control.Feedback type="invalid">
                             Please enter a source

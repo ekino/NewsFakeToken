@@ -1,4 +1,4 @@
 export default {
-    apiKey: "af5801744a1a6aa10652",
-    apiSecret: "457cbd92a907ffb74f2b46b6ee0e766a94878acf60c5590751445be2e8d640b2"
+    apiKey: 'ea1522e3c24fd69b67c7',
+    apiSecret: 'b0b203264f0bb66c5cc0bac22c6348085dc93774f835ad6931204cec607849ae'
   };
