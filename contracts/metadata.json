@@ -1,0 +1,31 @@
+{
+    "name": "News Fake Token",
+    "symbol": "FAKT",
+    "decimals": 0,
+    "description": "FA2 NFT Contract News Articles Minter",
+    "version": "beta",
+    "license": { "name": "MIT" },
+    "authors": ["ekino <blockchain@ekino.com>"],
+    "homepage": "htpps://newsfaketoken.web.app",
+    "source": {
+        "tools": "cameligo",
+        "location": "https://github.com/ekino/NewsFakeToken/contracts/src"
+    },
+    "interfaces": ["TZIP-012", "TZIP-016", "TZIP-021"],
+    "views": [
+        {
+            "name": "all_tokens",
+            "description": "Returns the list of tokens ids known to the contract",
+            "pure": true,
+            "implementations": [
+                {
+                    "michelsonStorageView": {
+                        "returnType": {
+                            "prim": "list nat"
+                        }
+                    }
+                }
+            ]
+        }
+    ]
+}
