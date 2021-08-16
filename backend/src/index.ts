@@ -51,12 +51,12 @@ app.post("/mint", async (req, res) => {
             }
         };
         const metadata = {
-        name: req.body.Title,
-        url: req.body.Url,
-        listeOfSources: req.body.ListNFTSources,
-        symbol: "TUT",
-        is_transferable: true,
-        shouldPreferSymbol: false
+            name: req.body.Title,
+            url: req.body.Url,
+            listeOfSources: req.body.ListNFTSources,
+            symbol: "TUT",
+            is_transferable: true,
+            shouldPreferSymbol: false
         };
 
         const pinnedMetadata = await pinata.pinJSONToIPFS(metadata, {
