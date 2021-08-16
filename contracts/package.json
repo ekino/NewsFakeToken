@@ -4,7 +4,7 @@
     "license": "MIT",
     "scripts": {
         "deploy": "./scripts/deploy.sh",
-        "test": "mocha -r ts-node/register tests/**/*.test.ts --timeout 30000"
+        "test": "mocha -r ts-node/register tests/**/*.test.ts --timeout 60000"
     },
     "devDependencies": {
         "@taquito/signer": "^10.0.0",

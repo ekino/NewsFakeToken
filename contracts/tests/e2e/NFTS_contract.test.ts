@@ -44,7 +44,7 @@ describe('Token', async () => {
         const op = await instance.methods
             .mint(char2Bytes('ipfs://QmaJf7oHy2vqhFHt2HFCxvgSBuyWLBCwETXFmmNExYwoAv'), alice.pkh)
             .send();
-        await op.confirmation(1, 1);
+        await op.confirmation(1);
     });
 
     it('should mint', async () => {
@@ -53,7 +53,7 @@ describe('Token', async () => {
         const op = await instance.methods
             .mint(char2Bytes('ipfs://QmeirRzdNfLHvfQi3tWDjUv2iBc8iqgjEXota9Nq7EDNp4'), alice.pkh)
             .send();
-        await op.confirmation(1, 1);
+        await op.confirmation(1);
     });
 
     it('should mint', async () => {
@@ -62,6 +62,6 @@ describe('Token', async () => {
         const op = await instance.methods
             .mint(char2Bytes('ipfs://QmbRaeD2ybA2iQJe6u2b4HGMvqBH4w3dQiaKT7n3c7uyzN'), alice.pkh)
             .send();
-        await op.confirmation(1, 1);
+        await op.confirmation(1);
     });
 });
