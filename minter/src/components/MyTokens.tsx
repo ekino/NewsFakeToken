@@ -8,7 +8,7 @@ import { Action, dataFetchReducer } from '../services/reducer';
 import { getMyTokens } from '../services/contract';
 
 interface Props {
-    activeAccountAddress: string;
+    activeAccountAddress?: string;
 }
 
 const MyTokens: FC<Props> = ({ ...props }) => {
@@ -24,7 +24,11 @@ const MyTokens: FC<Props> = ({ ...props }) => {
         useEffect(() => {
             (async (): Promise<void> => {
                 dispatch({ type: 'FETCH_INIT' } as Action);
-                const tokens = await getMyTokens(activeAccountAddress);
+
+                let tokens = [];
+                if (activeAccountAddress !== undefined) {
+                    tokens = await getMyTokens(activeAccountAddress);
+                }
 
                 try {
                     dispatch({ type: 'FETCH_SUCCESS', payload: tokens } as Action);
@@ -32,7 +36,7 @@ const MyTokens: FC<Props> = ({ ...props }) => {
                     dispatch({ type: 'FETCH_FAILURE' } as Action);
                 }
             })();
-        }, []);
+        }, [activeAccountAddress]);
 
         return state;
     };

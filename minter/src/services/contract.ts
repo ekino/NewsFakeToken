@@ -47,6 +47,10 @@ export const getMyTokens = async (address: string): Promise<any[]> => {
     const { reverse_ledger } = await contract.storage();
     const myTokens = await reverse_ledger.get(address);
 
+    if (undefined === myTokens) {
+        return [];
+    }
+
     const promises: any = [];
     myTokens.forEach((tokenId: BigNumber) =>
         promises.push(contract.tzip12().getTokenMetadata(tokenId.toNumber())),

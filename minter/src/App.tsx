@@ -36,8 +36,8 @@ function App(): JSX.Element {
                             <Metadata />
                         </Route>
                         <Route path="/my-tokens">
-                            {connected && activeAccount && (
-                                <MyTokens activeAccountAddress={activeAccount.address} />
+                            {connected && (
+                                <MyTokens activeAccountAddress={activeAccount?.address} />
                             )}
                         </Route>
                     </Switch>
