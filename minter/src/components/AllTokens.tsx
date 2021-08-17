@@ -39,8 +39,6 @@ export const AllTokens: FC = () => {
     };
 
     const { data, isLoading, isError } = useAllTokensFetcher();
-    const token = JSON.stringify(data);
-    const articles = JSON.parse(token);
 
     return (
         <Container>
@@ -49,7 +47,7 @@ export const AllTokens: FC = () => {
             ) : (
                 <p>
                     <Row xs={1} md={4}>
-                        {articles.map((article: any) => (
+                        {data.map((article: any) => (
                             <Col>
                                 <Card style={{ width: '18rem' }}>
                                     <Card.Header>
@@ -69,7 +67,7 @@ export const AllTokens: FC = () => {
                                     </Card.Header>
                                     <Card.Body>
                                         <ListGroup variant="flush">
-                                            {article.listeOfSources.map((source: any) => (
+                                            {article.listOfSources?.map((source: any) => (
                                                 <ListGroup.Item>{source}</ListGroup.Item>
                                             ))}
                                         </ListGroup>
