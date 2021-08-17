@@ -1,0 +1,90 @@
+= News Fake Token
+:imagesdir: images
+:sectids!:
+:experimental:
+:stylesdir: styles
+:stylesheet: custom.css
+
+== Concept
+Help people spot real and fake news.
+
+No central authority should decide.
+
+Free access for everyone.
+
+== Proposal
+Use the blockchain as a news metadata ledger.
+
+From a source of information, a NFT could be minted.
+
+This NFT could be confirmed or invalidated by others NFTs.
+
+== Implementations
+A https://gitlab.com/tezos/tzip/-/blob/master/proposals/tzip-12/tzip-12.md#nft-asset-contract[NFT asset contract (FA2)] on the Tezos blockchain.
+
+Implementing:
+
+* TZIP-012
+* TZIP-016
+* TZIP-021
+
+[.compact]
+== Contract metadata (TZIP-012, TZIP-016)
+
+As specified in https://gitlab.com/tezos/tzip/-/blob/master/proposals/tzip-16/tzip-16.md[TZIP-016], the contract storage includes a `%metadata` field.
+
+As specified in https://gitlab.com/tezos/tzip/-/blob/master/proposals/tzip-12/tzip-12.md#token-metadata[TZIP-012], the metadata also includes "symbol" and "decimals" fields.
+
+This field points to following metatada: (currently using tezos-storage)
+
+[source,json]
+{
+    "name": "News Fake Token",
+    "symbol": "FAKT",
+    "decimals": 0,
+    "description": "FA2 NFT Contract News Articles Minter",
+    "version": "beta",
+    "license": { "name": "MIT" },
+    "authors": ["ekino <blockchain@ekino.com>"],
+    "homepage": "htpps://newsfaketoken.web.app",
+    "source": {
+        "tools": "cameligo",
+        "location": "https://github.com/ekino/NewsFakeToken/contracts/src"
+    },
+    "interfaces": ["TZIP-012", "TZIP-016", "TZIP-021"],
+    "views": [
+        {
+            "name": "all_tokens",
+            "description": "Returns the list of tokens ids known to the contract",
+            "pure": true,
+            "implementations": [
+                {
+                    "michelsonStorageView": {
+                        "parameter": {
+                            "prim": "Unit"
+                        },
+                        "returnType": {
+                            "prim": "list"
+                        }
+                    }
+                }
+            ]
+        }
+    ]
+}
+
+[.compact]
+== Token metadata (TZIP-012, TZIP-021)
+As specified in https://gitlab.com/tezos/tzip/-/blob/master/proposals/tzip-12/tzip-12.md#token-metadata[TZIP-012], the contract provides access to the token-metadata, it is currently using the Basic implementation (big-map `%token_metadata` storage field).
+
+Tokens follows https://gitlab.com/tezos/tzip/-/blob/master/proposals/tzip-21/tzip-21.md[TZIP-021] standards and recommendations.
+
+[source,json]
+{
+    "name": "FAKT - asset title",
+    "symbol": "FAKT",
+    "decimals": 0,
+    "description": "FAKT NFT asset - don't trust, check facts!"
+    "identifier": "http://source-asset.somewhere/this-is-true-trust-me",
+    "isBooleanAmount": true
+}
