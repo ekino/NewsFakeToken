@@ -4,6 +4,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { WalletProvider, WalletProviderProps } from '@tezos-contrib/react-wallet-provider';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import './index.css';
 
 const network = process.env.REACT_APP_NETWORK || 'FLORENCENET';
 const NETWORK: WalletProviderProps['network'] =
@@ -11,7 +12,7 @@ const NETWORK: WalletProviderProps['network'] =
 
 ReactDOM.render(
     <StrictMode>
-        <WalletProvider name="newsfaketoken" clientType="beacon" network={NETWORK}>
+        <WalletProvider name="newsfaketoken" clientType="taquito" network={NETWORK}>
             <App />
         </WalletProvider>
     </StrictMode>,

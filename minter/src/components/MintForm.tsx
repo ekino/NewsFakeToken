@@ -1,168 +1,126 @@
-import { useState } from 'react';
-import './MinterForm.css';
-import {
-    Container,
-    Form,
-    Button,
-    InputGroup,
-    ListGroup,
-    OverlayTrigger,
-    Tooltip,
-} from 'react-bootstrap';
-import DeleteIcon from '@material-ui/icons/Delete';
-import { ListItemText, ListItemSecondaryAction, IconButton } from '@material-ui/core';
-import { Upload, PostInfo } from '../hooks/upload';
+import { useEffect, useReducer, useState, FC, Dispatch, SetStateAction } from 'react';
+import { useForm } from 'react-hook-form';
+import { useBeaconWallet, useWallet } from '@tezos-contrib/react-wallet-provider';
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as Yup from 'yup';
+import { Container, Form, Button, Spinner } from 'react-bootstrap';
+import { Action, dataFetchReducer } from '../services/reducer';
+import { newNFT } from '../services/api';
+import { mint } from '../services/contract';
 
-function MintForm(): JSX.Element {
-    const [validated, setValidated] = useState(false);
-    const [url, setUrl] = useState('');
-    const [title, setTitle] = useState('');
-    const [state, setState] = useState(false);
-    const [NFT, setNft] = useState('');
-    const [listNFTSource, setList] = useState([] as any);
-    const [data, setData] = useState({});
-    const doMint = PostInfo(title, url, listNFTSource);
+interface Props {
+    setOpHash: Dispatch<SetStateAction<string>>;
+    closeModal: () => void;
+}
 
-    const handleSubmit = (event: any): void => {
-        const form = event.currentTarget;
-        event.preventDefault();
-        event.stopPropagation();
-        if (form.checkValidity() === false) {
-            alert('The form is not well completed');
-        } else {
-            doMint('e');
-        }
-        setValidated(true);
+const MintForm: FC<Props> = ({ ...props }) => {
+    const { setOpHash, closeModal } = props;
+    const { activeAccount } = useWallet();
+
+    const useNewNFTApi = (): any => {
+        const [formData, setFormData] = useState(null);
+
+        const [state, dispatch] = useReducer(dataFetchReducer, {
+            isLoading: false,
+            isError: false,
+            data: [],
+        });
+
+        useEffect(() => {
+            if (
+                formData === null ||
+                activeAccount?.address === undefined ||
+                activeAccount?.address === null
+            )
+                return;
+
+            (async (): Promise<void> => {
+                dispatch({ type: 'FETCH_INIT' } as Action);
+                const apiPinNFTResponse = await newNFT(formData);
+                const jsonResponse = await apiPinNFTResponse.json();
+                if (jsonResponse.status !== true) {
+                    throw new Error('could not pin NFT');
+                }
+
+                const op = await mint(jsonResponse.msg.metadataHash, activeAccount.address);
+                setOpHash(op.opHash);
+
+                try {
+                    dispatch({
+                        type: 'FETCH_SUCCESS',
+                        payload: { operationHash: op.opHash },
+                    } as Action);
+                } catch (error) {
+                    dispatch({ type: 'FETCH_FAILURE' } as Action);
+                }
+
+                closeModal();
+            })();
+        }, [formData]);
+
+        return [state, setFormData];
     };
 
-    const handleChangeTitle = (event: any): void => {
-        setTitle(event.target.value);
+    const validationSchema = Yup.object().shape({
+        title: Yup.string().required('title is required'),
+        url: Yup.string().required('url is required'),
+    });
+
+    const {
+        register,
+        handleSubmit,
+        formState: { errors },
+    } = useForm({
+        resolver: yupResolver(validationSchema),
+    });
+
+    const [{ isLoading, isError, data }, setFormData] = useNewNFTApi();
+
+    const onSubmit = async (submittedData: FormData): Promise<void> => {
+        setFormData(submittedData);
     };
 
-    const handleChangeUrl = (event: any): void => {
-        setUrl(event.target.value);
-    };
-
-    const handleChangeNft = (event: any): void => {
-        setNft(event.target.value);
-    };
-
-    const handleClick = (evt: any): void => {
-        if (NFT === '') {
-            alert('Please enter a source !');
-        } else {
-            listNFTSource.push(NFT);
-            setState(evt);
-            setNft('');
-        }
-    };
-
-    const deleteItem = (item: any, evt: any): void => {
-        listNFTSource.splice(
-            listNFTSource.findIndex((element: any) => element === item),
-            1,
-        );
-        setState(evt);
-    };
+    console.log(data);
 
     return (
         <Container>
-            <Form
-                noValidate
-                validated={validated}
-                onSubmit={handleSubmit}
-                encType="multipart/form-data"
-                method="post"
-            >
-                <Form.Group className="mb-3" controlId="Url">
-                    <Form.Label>
-                        <h2>Complete this form to mint your news.</h2>
-                        In this form you need to complete the title, the url address of your article
-                        and find the id of the articles you are using as sources.{' '}
-                        <b>Be sure to write the right IDs.</b>
-                    </Form.Label>
-                    <Form.Label control-label>Title of the article</Form.Label>
-                    <Form.Control
-                        required
-                        type="string"
-                        placeholder="Title of the article"
-                        value={title}
-                        onChange={handleChangeTitle}
-                    />
-                    <Form.Control.Feedback type="invalid">
-                        Please enter a title
-                    </Form.Control.Feedback>
-                </Form.Group>
-                <Form.Group className="mb-3" controlId="Url">
-                    <Form.Label>Url of the article</Form.Label>
-                    <Form.Control
-                        required
-                        type="url"
-                        placeholder="Url of the article"
-                        value={url}
-                        onChange={handleChangeUrl}
-                    />
-                    <Form.Control.Feedback type="invalid">
-                        Please enter an url
-                    </Form.Control.Feedback>
-                </Form.Group>
-                <Form.Group className="mb-3" controlId="NFTSources">
-                    <Form.Label>Sources of the article</Form.Label>
-                    <InputGroup className="mb-3">
+            <h2>Complete this form to mint your news.</h2>
+            In this form you need to complete the title, the url address of your article and find
+            the id of the articles you are using as sources. <b>Be sure to write the right IDs.</b>
+            {isError && <p>Oups</p>}
+            {isLoading ? (
+                <Spinner animation="grow" />
+            ) : (
+                <Form noValidate onSubmit={handleSubmit(onSubmit)}>
+                    <Form.Group className="mb-3">
+                        <Form.Label className="required">Title of the article</Form.Label>
                         <Form.Control
-                            type="text"
-                            placeholder="NFT source of the article"
-                            value={NFT}
-                            onChange={handleChangeNft}
+                            className={`form-control ${errors.title ? 'is-invalid' : ''}`}
+                            placeholder="Title of the article"
+                            // eslint-disable-next-line react/jsx-props-no-spreading
+                            {...register('title')}
                         />
                         <Form.Control.Feedback type="invalid">
-                            Please enter a source
+                            {errors.title?.message}
                         </Form.Control.Feedback>
-                        <OverlayTrigger
-                            overlay={
-                                <Tooltip id="tooltip-disabled">
-                                    Add a source to this article
-                                </Tooltip>
-                            }
-                        >
-                            <Button
-                                variant="outline-secondary"
-                                id="button-addon2"
-                                onClick={handleClick}
-                            >
-                                Add source
-                            </Button>
-                        </OverlayTrigger>
-                    </InputGroup>
-                    <ListGroup id="ListNFT">
-                        {listNFTSource.map((item: any) => (
-                            <ListGroup.Item variant="light" key={item}>
-                                <ListItemText primary={item} />
-                                <ListItemSecondaryAction>
-                                    <OverlayTrigger
-                                        overlay={
-                                            <Tooltip id="tooltip-disabled">
-                                                Delete this source
-                                            </Tooltip>
-                                        }
-                                    >
-                                        <IconButton
-                                            edge="end"
-                                            aria-label="delete"
-                                            onClick={(evt) => deleteItem(item, evt)}
-                                        >
-                                            <DeleteIcon />
-                                        </IconButton>
-                                    </OverlayTrigger>
-                                </ListItemSecondaryAction>
-                            </ListGroup.Item>
-                        ))}
-                    </ListGroup>
-                </Form.Group>
-                <Button type="submit">Mint your news</Button>
-            </Form>
+                    </Form.Group>
+                    <Form.Group className="mb-3">
+                        <Form.Label className="required">Url of the article</Form.Label>
+                        <Form.Control
+                            className={`form-control ${errors.title ? 'is-invalid' : ''}`}
+                            placeholder="Url of the article"
+                            // eslint-disable-next-line react/jsx-props-no-spreading
+                            {...register('url')}
+                        />
+                        <Form.Control.Feedback type="invalid">
+                            {errors.url?.message}
+                        </Form.Control.Feedback>
+                    </Form.Group>
+                    <Button type="submit">Mint your news</Button>
+                </Form>
+            )}
         </Container>
     );
-}
+};
 
 export default MintForm;
