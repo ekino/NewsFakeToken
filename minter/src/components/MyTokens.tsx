@@ -1,9 +1,11 @@
-import { Container, Row, Col } from 'react-bootstrap';
+import { Container, Row, Col, Spinner } from 'react-bootstrap';
 import { FC, useEffect, useReducer, useMemo, useState } from 'react';
 import * as React from 'react';
 import Datatable from 'react-data-table-component';
 import InvalidModal from './InvalidModal';
 import MintButton from './MintButton';
+import { Action, dataFetchReducer } from '../services/reducer';
+import { getMyTokens } from '../services/contract';
 
 interface Props {
     activeAccountAddress: string;
@@ -11,6 +13,31 @@ interface Props {
 
 const MyTokens: FC<Props> = ({ ...props }) => {
     const { activeAccountAddress } = props;
+
+    const useMyTokensFetcher = (): any => {
+        const [state, dispatch] = useReducer(dataFetchReducer, {
+            isLoading: false,
+            isError: false,
+            data: [],
+        });
+
+        useEffect(() => {
+            (async (): Promise<void> => {
+                dispatch({ type: 'FETCH_INIT' } as Action);
+                const tokens = await getMyTokens(activeAccountAddress);
+
+                try {
+                    dispatch({ type: 'FETCH_SUCCESS', payload: tokens } as Action);
+                } catch (error) {
+                    dispatch({ type: 'FETCH_FAILURE' } as Action);
+                }
+            })();
+        }, []);
+
+        return state;
+    };
+
+    const { data, isLoading, isError } = useMyTokensFetcher();
 
     const headers = [
         { name: 'Token ID', selector: 'tokenId', grow: 0 },
@@ -28,11 +55,6 @@ const MyTokens: FC<Props> = ({ ...props }) => {
             },
         },
     ];
-    const data = [
-        { tokenId: 1, tokenName: 'fomo', url: 'http://url1.com', sourcesNames: ['a', 'b'] },
-        { tokenId: 2, tokenName: 'folo', url: 'http://url1.com', sourcesNames: ['cd', 'ef'] },
-        { tokenId: 3, tokenName: 'fowo', url: 'http://url1.com', sourcesNames: ['NFT1', 'NFT2'] },
-    ];
 
     const actionsMemo = React.useMemo(() => <MintButton />, []);
 
@@ -44,15 +66,23 @@ const MyTokens: FC<Props> = ({ ...props }) => {
                 need be. Click on &quot;Mint&quot; to create a new NewsFT.
             </p>
             <Row>
-                <Col md={{ span: 10, offset: 1 }}>
-                    <Datatable
-                        title="My NFTs"
-                        columns={headers}
-                        data={data}
-                        pagination
-                        actions={actionsMemo}
-                    />
-                </Col>
+                {isLoading ? (
+                    <Spinner animation="grow" />
+                ) : (
+                    <Col md={{ span: 10, offset: 1 }}>
+                        <Datatable
+                            title="My NFTs"
+                            columns={headers}
+                            data={data.map((meta: any) => ({
+                                tokenId: meta.token_id,
+                                tokenName: meta.name,
+                                url: meta.identifier,
+                            }))}
+                            pagination
+                            actions={actionsMemo}
+                        />
+                    </Col>
+                )}
             </Row>
         </Container>
     );
