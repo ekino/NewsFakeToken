@@ -1,5 +1,16 @@
 import { FC, useEffect, useReducer } from 'react';
-import { Row, Spinner } from 'react-bootstrap';
+import {
+    Row,
+    Spinner,
+    Card,
+    ListGroup,
+    Nav,
+    Col,
+    Container,
+    OverlayTrigger,
+    Tooltip,
+} from 'react-bootstrap';
+import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 import { getAllTokens } from '../services/contract';
 import { Action, dataFetchReducer } from '../services/reducer';
 
@@ -28,13 +39,59 @@ export const AllTokens: FC = () => {
     };
 
     const { data, isLoading, isError } = useAllTokensFetcher();
+    const token = JSON.stringify(data);
+    const articles = JSON.parse(token);
 
     return (
-        <Row className="mt-4">
-            {isLoading ? <Spinner animation="grow" /> : <p>{JSON.stringify(data)}</p>}
+        <Container>
+            {isLoading ? (
+                <Spinner animation="grow" />
+            ) : (
+                <p>
+                    <Row xs={1} md={4}>
+                        {articles.map((article: any) => (
+                            <Col>
+                                <Card style={{ width: '18rem' }}>
+                                    <Card.Header>
+                                        <OverlayTrigger
+                                            overlay={
+                                                <Tooltip id="tooltip-dispabled">
+                                                    Clic to go to the article page
+                                                </Tooltip>
+                                            }
+                                        >
+                                            <Nav.Item>
+                                                <Nav.Link href={article.identifier}>
+                                                    {article.name}
+                                                </Nav.Link>
+                                            </Nav.Item>
+                                        </OverlayTrigger>
+                                    </Card.Header>
+                                    <Card.Body>
+                                        <ListGroup variant="flush">
+                                            {article.listeOfSources.map((source: any) => (
+                                                <ListGroup.Item>{source}</ListGroup.Item>
+                                            ))}
+                                        </ListGroup>
+                                    </Card.Body>
+                                    <Card.Footer>
+                                        <Card.Text>
+                                            Current status of this article :
+                                            <CheckCircleIcon />
+                                        </Card.Text>
+                                        <Card.Text>
+                                            Id of this article : {article.token_id}
+                                        </Card.Text>
+                                    </Card.Footer>
+                                </Card>
+                            </Col>
+                        ))}
+                    </Row>
+                </p>
+            )}
 
             {isError && <p>Oups</p>}
-        </Row>
+        </Container>
     );
 };
 
