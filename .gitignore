@@ -22,3 +22,6 @@ npm-debug.log*
 !/contracts/deployments/.keep
 *.log
 __pycache_
+
+# docs
+/docs/slides/*.html
