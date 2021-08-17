@@ -10,7 +10,6 @@ import {
     OverlayTrigger,
     Tooltip,
 } from 'react-bootstrap';
-import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 import { getAllTokens } from '../services/contract';
 import { Action, dataFetchReducer } from '../services/reducer';
 
@@ -40,6 +39,37 @@ export const AllTokens: FC = () => {
 
     const { data, isLoading, isError } = useAllTokensFetcher();
 
+    const status = 'success';
+    const classStatus = 'bg-success';
+
+    // eslint-disable-next-line consistent-return
+    function articleTitle(id: any): any {
+        // eslint-disable-next-line no-restricted-syntax
+        for (const article of data) {
+            if (article.token_id === Number(id)) {
+                const title = article.name.toString();
+                const url = article.identifier.toString();
+                return [title, url];
+            }
+        }
+    }
+
+    // function checkStatus(id: any): any {
+    //     const status: string;
+    //     const classStatus: string;
+    //     if ('addressToken' === 'addressBurn' || 'sourcesInvalid') {
+    //         'status = danger;'
+    //         'classStatus = bg-danger;'
+    //     } else if ('sourceInvalid') {
+    //         'status = warning;'
+    //         'classStatus = bg-warning;'
+    //     } else {
+    //         'status = success'
+    //         'classStatus = bg-success;'
+    //    }
+    //    return [status, classStatus];
+    // }
+
     return (
         <Container>
             {isLoading ? (
@@ -49,7 +79,7 @@ export const AllTokens: FC = () => {
                     <Row xs={1} md={4}>
                         {data.map((article: any) => (
                             <Col>
-                                <Card style={{ width: '18rem' }}>
+                                <Card bg={status} text="light" style={{ width: '18rem' }}>
                                     <Card.Header>
                                         <OverlayTrigger
                                             overlay={
@@ -59,7 +89,10 @@ export const AllTokens: FC = () => {
                                             }
                                         >
                                             <Nav.Item>
-                                                <Nav.Link href={article.identifier}>
+                                                <Nav.Link
+                                                    className="text-light"
+                                                    href={article.identifier}
+                                                >
                                                     {article.name}
                                                 </Nav.Link>
                                             </Nav.Item>
@@ -68,15 +101,20 @@ export const AllTokens: FC = () => {
                                     <Card.Body>
                                         <ListGroup variant="flush">
                                             {article.listOfSources?.map((source: any) => (
-                                                <ListGroup.Item>{source}</ListGroup.Item>
+                                                <ListGroup.Item className={classStatus}>
+                                                    <Nav.Item>
+                                                        <Nav.Link
+                                                            className="text-light"
+                                                            href={articleTitle(source)[1]}
+                                                        >
+                                                            {articleTitle(source)[0]}
+                                                        </Nav.Link>
+                                                    </Nav.Item>
+                                                </ListGroup.Item>
                                             ))}
                                         </ListGroup>
                                     </Card.Body>
                                     <Card.Footer>
-                                        <Card.Text>
-                                            Current status of this article :
-                                            <CheckCircleIcon />
-                                        </Card.Text>
                                         <Card.Text>
                                             Id of this article : {article.token_id}
                                         </Card.Text>
