@@ -38,7 +38,7 @@ app.post('/mint', async (req, res) => {
             description: "FAKT NFT asset - don't trust, check facts!",
             isBooleanAmout: true,
             identifier: req.body.Url,
-            listeOfSources: req.body.ListNFTSources,
+            listOfSources: req.body.ListNFTSources,
             symbol: 'FAKT',
             is_transferable: true,
             shouldPreferSymbol: false,

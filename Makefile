@@ -63,6 +63,9 @@ install: ##@Workspace install workspace
 ########################################
 #             BACKEND                  #
 ########################################
+backend-kill: ##@Backend kill backend process
+	sudo kill -9 $(sudo lsof -t -i:8080)
+
 backend-start: ##@Backend start backend
 	$(NODE_CMD) yarn backend:start
 
@@ -81,6 +84,9 @@ contracts-test: ##@Contracts test contracts
 ########################################
 #              MINTER                  #
 ########################################
+minter-kill: ##@Minter kill minter process
+	sudo kill -9 $(sudo lsof -t -i:3000)
+
 minter-lint: ##@Minter lint minter app
 	$(NODE_CMD) yarn minter:lint
 
