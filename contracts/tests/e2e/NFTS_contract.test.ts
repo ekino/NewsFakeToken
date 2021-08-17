@@ -22,6 +22,15 @@ type Storage = {
     token_metadata: BigMapAbstraction;
 };
 
+const cids = [
+    'QmeZgREX5yw1KYzoQe2CkK93QaHusrzBRXP2Fo2h2hUKdE',
+    'QmQ5mAKio4M6df3Kan3HbtdVeSEffm65JN5mnnf8R8RSqg',
+    'QmUeE7uwqTifAzj1LnCNeaziLaSERdxLcggoQdWT7cxboh',
+    'Qme9xNLc1SfpUoqKV9sJE2g5oX124ZnwQijgSJvqPcyEeL',
+    'Qmc45YZUfY6KJwkCLXQtcyLrHQxcDf6iLneMDzQ4wHkLWK',
+    'Qme5eGw9Y9n8NrRguQUv8pS8AFg7MkHuTPny91SunK7egJ',
+];
+
 beforeEach(async () => {
     const signer = await InMemorySigner.fromSecretKey(alice.sk);
     Tezos.setProvider({ signer });
@@ -38,30 +47,13 @@ describe('Token', async () => {
         );
     });
 
-    it('should mint', async () => {
-        const instance = await Tezos.contract.at(contractAddress);
+    for (const cid of cids) {
+        it('should mint', async () => {
+            const instance = await Tezos.contract.at(contractAddress);
 
-        const op = await instance.methods
-            .mint(char2Bytes('ipfs://QmaJf7oHy2vqhFHt2HFCxvgSBuyWLBCwETXFmmNExYwoAv'), alice.pkh)
-            .send();
-        await op.confirmation(1);
-    });
-
-    it('should mint', async () => {
-        const instance = await Tezos.contract.at(contractAddress);
-
-        const op = await instance.methods
-            .mint(char2Bytes('ipfs://QmeirRzdNfLHvfQi3tWDjUv2iBc8iqgjEXota9Nq7EDNp4'), alice.pkh)
-            .send();
-        await op.confirmation(1);
-    });
-
-    it('should mint', async () => {
-        const instance = await Tezos.contract.at(contractAddress);
-
-        const op = await instance.methods
-            .mint(char2Bytes('ipfs://QmbRaeD2ybA2iQJe6u2b4HGMvqBH4w3dQiaKT7n3c7uyzN'), alice.pkh)
-            .send();
-        await op.confirmation(1);
-    });
+            const op = await instance.methods.mint(char2Bytes(`ipfs://${cid}`), alice.pkh).send();
+            await op.confirmation(1);
+            console.log(`[OK] ${op.hash}`);
+        });
+    }
 });

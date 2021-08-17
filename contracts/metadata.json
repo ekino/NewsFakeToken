@@ -6,7 +6,7 @@
     "version": "beta",
     "license": { "name": "MIT" },
     "authors": ["ekino <blockchain@ekino.com>"],
-    "homepage": "htpps://newsfaketoken.web.app",
+    "homepage": "https://newsfaketoken.web.app",
     "source": {
         "tools": "cameligo",
         "location": "https://github.com/ekino/NewsFakeToken/contracts/src"
