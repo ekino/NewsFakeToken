@@ -30,11 +30,11 @@ SHELL := /bin/bash
 # Environment specific commands and files
 ifeq ($(shell env|grep -c "^CI="),1)
 	COMPOSE_CMD = docker-compose -f docker-compose.ci.yaml
-	ENV_FILE = .env.ci
+	DEFAULT_ENV_FILE = .env.ci
 	NODE_CMD = docker-compose -f docker-compose.ci.yaml exec -T node
 else
 	COMPOSE_CMD = docker compose
-	ENV_FILE = .env.dist
+	DEFAULT_ENV_FILE = .env.dist
 endif
 
 ########################################
@@ -56,9 +56,9 @@ infra-up: ##@Infra create and start all the containers
 #             WORKSPACE                #
 ########################################
 install: ##@Workspace install workspace
-	@if [ ! -f .env -a -f ./contracts/$(ENV_FILE) ]; then cp ./contracts/$(ENV_FILE) ./contracts/.env; fi
-	@if [ ! -f .env -a -f ./backend/$(ENV_FILE) ]; then cp ./backend/$(ENV_FILE) ./backend/.env; fi
-	@if [ ! -f .env -a -f ./minter/$(ENV_FILE) ]; then cp ./minter/$(ENV_FILE) ./minter/.env; fi
+	@if [ ! -f ./contracts/.env -a -f ./contracts/$(DEFAULT_ENV_FILE) ]; then cp ./contracts/$(DEFAULT_ENV_FILE) ./contracts/.env; fi
+	@if [ ! -f ./backend/.env -a -f ./backend/$(DEFAULT_ENV_FILE) ]; then cp ./backend/$(DEFAULT_ENV_FILE) ./backend/.env; fi
+	@if [ ! -f ./minter/.env -a -f ./minter/$(DEFAULT_ENV_FILE) ]; then cp ./minter/$(DEFAULT_ENV_FILE) ./minter/.env; fi
 	$(NODE_CMD) yarn --ignore-engines
 
 conf: ##@Workspace switch node config

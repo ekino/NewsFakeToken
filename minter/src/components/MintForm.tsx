@@ -80,8 +80,6 @@ const MintForm: FC<Props> = ({ ...props }) => {
         setFormData(submittedData);
     };
 
-    console.log(data);
-
     return (
         <Container>
             <h2>Complete this form to mint your news.</h2>
