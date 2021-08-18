@@ -4,5 +4,7 @@ services:
   sandbox:
     image: "tqtezos/flextesa:20210602"
     command: flobox start
+    environment:
+      - flextesa_node_cors_origin=*
     ports:
       - "8732:20000"

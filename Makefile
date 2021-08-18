@@ -58,7 +58,11 @@ infra-up: ##@Infra create and start all the containers
 install: ##@Workspace install workspace
 	@if [ ! -f .env -a -f ./contracts/$(ENV_FILE) ]; then cp ./contracts/$(ENV_FILE) ./contracts/.env; fi
 	@if [ ! -f .env -a -f ./backend/$(ENV_FILE) ]; then cp ./backend/$(ENV_FILE) ./backend/.env; fi
+	@if [ ! -f .env -a -f ./minter/$(ENV_FILE) ]; then cp ./minter/$(ENV_FILE) ./minter/.env; fi
 	$(NODE_CMD) yarn --ignore-engines
+
+conf: ##@Workspace switch node config
+	./scripts/conf.sh
 
 ########################################
 #             BACKEND                  #

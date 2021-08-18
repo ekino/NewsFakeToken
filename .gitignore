@@ -28,3 +28,6 @@ __pycache_
 
 # docs
 /docs/slides/*.html
+
+# minter
+/minter/.env
