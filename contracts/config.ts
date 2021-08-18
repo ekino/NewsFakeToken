@@ -43,7 +43,7 @@ const config: Config = {
         accounts: devAccounts,
     },
     testnet: {
-        node: 'https://florencenet.smartpy.io',
+        node: 'http://52.47.113.94:8732',
         accounts: {
             alice: {
                 pkh: 'tz1UxbPFjP22Hmc4tz2cxEXUx3cz17W4L7ow',
