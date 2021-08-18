@@ -1,4 +1,4 @@
-import { FC, useEffect, useReducer } from 'react';
+import { FC, useEffect, useReducer, FormEvent, useState, SyntheticEvent } from 'react';
 import {
     Row,
     Spinner,
@@ -10,12 +10,16 @@ import {
     OverlayTrigger,
     Tooltip,
 } from 'react-bootstrap';
-import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 import { getAllTokens } from '../services/contract';
 import { Action, dataFetchReducer } from '../services/reducer';
+import { SearchBar } from './SearchBar';
 
 export const AllTokens: FC = () => {
-    const useAllTokensFetcher = (): any => {
+    const [query, setQuery] = useState('');
+
+    const useAllTokensFetcher = (initialQuery: string): any => {
+        const [filter, setFilter] = useState(initialQuery);
+
         const [state, dispatch] = useReducer(dataFetchReducer, {
             isLoading: false,
             isError: false,
@@ -26,19 +30,37 @@ export const AllTokens: FC = () => {
             (async (): Promise<void> => {
                 dispatch({ type: 'FETCH_INIT' } as Action);
                 const tokens = await getAllTokens();
-
                 try {
                     dispatch({ type: 'FETCH_SUCCESS', payload: tokens } as Action);
                 } catch (error) {
                     dispatch({ type: 'FETCH_FAILURE' } as Action);
                 }
             })();
-        }, []);
+        }, [filter]);
 
-        return state;
+        state.data = state.data.filter((article: any) => article.name.includes(filter));
+
+        return [state, setFilter];
     };
 
-    const { data, isLoading, isError } = useAllTokensFetcher();
+    const [{ data, isLoading, isError }, doFilter] = useAllTokensFetcher('');
+
+    const classStatus = 'bg-success';
+
+    // eslint-disable-next-line consistent-return
+    function articleTitle(id: number): any {
+        // eslint-disable-next-line no-restricted-syntax
+        for (const article of data) {
+            if (article.token_id === Number(id)) {
+                return (
+                    <Nav.Link className="text-dark" href={article.identifier}>
+                        {article.name}
+                    </Nav.Link>
+                );
+            }
+        }
+        return <> </>;
+    }
 
     return (
         <Container>
@@ -46,6 +68,16 @@ export const AllTokens: FC = () => {
                 <Spinner animation="grow" />
             ) : (
                 <p>
+                    <SearchBar
+                        value={query}
+                        onChange={(e: FormEvent<HTMLInputElement>): void =>
+                            setQuery(e.currentTarget.value)
+                        }
+                        onSubmit={(e: SyntheticEvent) => {
+                            doFilter(query);
+                            e.preventDefault();
+                        }}
+                    />
                     <Row xs={1} md={4}>
                         {data.map((article: any) => (
                             <Col>
@@ -59,7 +91,10 @@ export const AllTokens: FC = () => {
                                             }
                                         >
                                             <Nav.Item>
-                                                <Nav.Link href={article.identifier}>
+                                                <Nav.Link
+                                                    className="text-dark"
+                                                    href={article.identifier}
+                                                >
                                                     {article.name}
                                                 </Nav.Link>
                                             </Nav.Item>
@@ -67,16 +102,16 @@ export const AllTokens: FC = () => {
                                     </Card.Header>
                                     <Card.Body>
                                         <ListGroup variant="flush">
-                                            {article.listOfSources?.map((source: any) => (
-                                                <ListGroup.Item>{source}</ListGroup.Item>
-                                            ))}
+                                            {/* {JSON.stringify(article)} */}
+                                            {article.listOfSources !== undefined &&
+                                                article.listOfSources.map((source: number) => (
+                                                    <ListGroup.Item>
+                                                        <Nav.Item>{articleTitle(source)}</Nav.Item>
+                                                    </ListGroup.Item>
+                                                ))}
                                         </ListGroup>
                                     </Card.Body>
-                                    <Card.Footer>
-                                        <Card.Text>
-                                            Current status of this article :
-                                            <CheckCircleIcon />
-                                        </Card.Text>
+                                    <Card.Footer className={classStatus}>
                                         <Card.Text>
                                             Id of this article : {article.token_id}
                                         </Card.Text>
