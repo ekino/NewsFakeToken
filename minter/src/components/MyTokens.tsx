@@ -13,6 +13,7 @@ interface Props {
 
 const MyTokens: FC<Props> = ({ ...props }) => {
     const { activeAccountAddress } = props;
+    const [opHash, setOpHash] = useState<string>('');
 
     const useMyTokensFetcher = (): any => {
         const [state, dispatch] = useReducer(dataFetchReducer, {
@@ -60,11 +61,12 @@ const MyTokens: FC<Props> = ({ ...props }) => {
         },
     ];
 
-    const actionsMemo = React.useMemo(() => <MintButton />, []);
+    const actionsMemo = React.useMemo(() => <MintButton setOpHash={setOpHash} />, []);
 
     return (
         <Container>
             <h2 className="mt-5">Minted NewsFT</h2>
+            {opHash !== '' && <p>{opHash}</p>}
             <p className="lead">
                 Those are your minted NewsFT. You can see their status, and invalid them here if
                 need be. Click on &quot;Mint&quot; to create a new NewsFT.

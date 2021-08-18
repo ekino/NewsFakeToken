@@ -1,13 +1,28 @@
+import { useEffect } from 'react';
 import { Container } from 'react-bootstrap';
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
-import { useWallet } from '@tezos-contrib/react-wallet-provider';
+import { useWallet, useBeaconWallet } from '@tezos-contrib/react-wallet-provider';
+// eslint-disable-next-line import/no-extraneous-dependencies
+import CONTRACT_ADDRESS from '@newsfaketoken/contracts/deployments/NFTS_contract';
 import NavBarComponent from './components/NavBar';
 import AllTokens from './components/AllTokens';
 import MyTokens from './components/MyTokens';
 import Metadata from './components/Metadata';
+import { initTezos, initMinterContract, setWalletProvider } from './services/contract';
+
+const RPC_URL = process.env.REACT_APP_RPC_URL || 'https://florencenet.smartpy.io/';
 
 function App(): JSX.Element {
     const { connected, activeAccount } = useWallet();
+
+    const beaconWallet = useBeaconWallet();
+    useEffect(() => {
+        initTezos(RPC_URL);
+        initMinterContract(CONTRACT_ADDRESS);
+    }, []);
+    useEffect(() => {
+        setWalletProvider(beaconWallet);
+    }, [beaconWallet]);
 
     return (
         <BrowserRouter>

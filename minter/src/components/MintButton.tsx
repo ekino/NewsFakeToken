@@ -1,10 +1,15 @@
+import { FC, Dispatch, SetStateAction, useState } from 'react';
 import { Button, Modal } from 'react-bootstrap';
-import { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlusCircle } from '@fortawesome/free-solid-svg-icons';
 import MintForm from './MintForm';
 
-function MintButton(): JSX.Element {
+interface Props {
+    setOpHash: Dispatch<SetStateAction<string>>;
+}
+
+const MintButton: FC<Props> = ({ ...props }) => {
+    const { setOpHash } = props;
     const [show, setShow] = useState(false);
 
     function handleClose(): void {
@@ -25,11 +30,11 @@ function MintButton(): JSX.Element {
                     <Modal.Title>Mint your news</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <MintForm />
+                    <MintForm setOpHash={setOpHash} closeModal={handleClose} />
                 </Modal.Body>
             </Modal>
         </>
     );
-}
+};
 
 export default MintButton;

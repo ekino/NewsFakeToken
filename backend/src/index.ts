@@ -23,9 +23,9 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.post('/mint', async (req, res) => {
-    const formData = req.body;
+    const json = req.body;
 
-    if (!formData) {
+    if (!json) {
         res.status(500).json({ status: false, msg: 'no data provided' });
     } else {
         await pinata
@@ -33,12 +33,12 @@ app.post('/mint', async (req, res) => {
             .catch((err: Error) => res.status(500).json(JSON.stringify(err)));
 
         const metadata = {
-            name: req.body.Title,
+            name: req.body.title,
             decimals: 0,
             description: "FAKT NFT asset - don't trust, check facts!",
             isBooleanAmout: true,
-            identifier: req.body.Url,
-            listOfSources: req.body.ListNFTSources,
+            identifier: req.body.url,
+            listOfSources: req.body.listNFTSources,
             symbol: 'FAKT',
             is_transferable: true,
             shouldPreferSymbol: false,

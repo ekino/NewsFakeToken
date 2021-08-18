@@ -1,32 +1,57 @@
-import { BigMapAbstraction, TezosToolkit, compose } from '@taquito/taquito';
+import { BeaconWallet } from '@taquito/beacon-wallet';
+import {
+    TezosToolkit,
+    TransactionWalletOperation,
+    compose,
+    MichelCodecPacker,
+} from '@taquito/taquito';
 import { Tzip12Module, tzip12 } from '@taquito/tzip12';
-import { Tzip16Module, tzip16 } from '@taquito/tzip16';
+import { tzip16 } from '@taquito/tzip16';
+import { char2Bytes } from '@taquito/utils';
+import BigNumber from 'bignumber.js';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import CONTRACT_ADDRESS from '@newsfaketoken/contracts/deployments/NFTS_contract';
-import BigNumber from 'bignumber.js';
 
 const RPC_URL = process.env.REACT_APP_RPC_URL || 'https://florencenet.smartpy.io/';
 
-export const getMetadata = async (): Promise<any> => {
-    const tezos = new TezosToolkit(RPC_URL);
-    tezos.addExtension(new Tzip12Module());
-    const contract = await tezos.contract.at(CONTRACT_ADDRESS, compose(tzip12, tzip16));
+let tezos: TezosToolkit;
+let minterContract: any;
 
-    return contract.tzip16().getMetadata();
+export const initTezos = (url: string): void => {
+    tezos = new TezosToolkit(url);
+    tezos.addExtension(new Tzip12Module());
+    tezos.setPackerProvider(new MichelCodecPacker());
+};
+
+export const setWalletProvider = (wallet: BeaconWallet): void => {
+    // eslint-disable-next-line no-unused-expressions
+    tezos && tezos.setProvider({ wallet });
+};
+
+export const initMinterContract = async (address: string | null = null): Promise<void> => {
+    if (!address || tezos === null) {
+        throw new Error('contract address not set or Tezos not initialized');
+    }
+
+    minterContract = await tezos.wallet.at(address, compose(tzip12, tzip16));
+};
+
+export const getMetadata = async (): Promise<any> => {
+    return minterContract.tzip16().getMetadata();
 };
 
 export const getTokenMetadata = async (tokenId: number): Promise<any> => {
-    const tezos = new TezosToolkit(RPC_URL);
-    tezos.addExtension(new Tzip12Module());
-    const contract = await tezos.contract.at(CONTRACT_ADDRESS, compose(tzip12, tzip16));
+    const tz = new TezosToolkit(RPC_URL);
+    tz.addExtension(new Tzip12Module());
+    const contract = await tz.contract.at(CONTRACT_ADDRESS, compose(tzip12, tzip16));
 
     return contract.tzip12().getTokenMetadata(tokenId);
 };
 
 export const getAllTokens = async (): Promise<any[]> => {
-    const tezos = new TezosToolkit(RPC_URL);
-    tezos.addExtension(new Tzip12Module());
-    const contract = await tezos.contract.at(CONTRACT_ADDRESS, tzip12);
+    const tz = new TezosToolkit(RPC_URL);
+    tz.addExtension(new Tzip12Module());
+    const contract = await tz.contract.at(CONTRACT_ADDRESS, tzip12);
 
     // eslint-disable-next-line  camelcase
     const { all_tokens } = await contract.storage();
@@ -39,9 +64,9 @@ export const getAllTokens = async (): Promise<any[]> => {
 };
 
 export const getMyTokens = async (address: string): Promise<any[]> => {
-    const tezos = new TezosToolkit(RPC_URL);
-    tezos.addExtension(new Tzip12Module());
-    const contract = await tezos.contract.at(CONTRACT_ADDRESS, tzip12);
+    const tz = new TezosToolkit(RPC_URL);
+    tz.addExtension(new Tzip12Module());
+    const contract = await tz.contract.at(CONTRACT_ADDRESS, tzip12);
 
     // eslint-disable-next-line  camelcase
     const { reverse_ledger } = await contract.storage();
@@ -57,4 +82,8 @@ export const getMyTokens = async (address: string): Promise<any[]> => {
     );
 
     return Promise.all(promises);
+};
+
+export const mint = async (cid: string, address: string): Promise<TransactionWalletOperation> => {
+    return minterContract.methods.mint(char2Bytes(`ipfs://${cid}`), address).send();
 };
