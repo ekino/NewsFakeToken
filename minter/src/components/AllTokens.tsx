@@ -1,4 +1,4 @@
-import { FC, useEffect, useReducer } from 'react';
+import { FC, useEffect, useReducer, FormEvent, useState, SyntheticEvent } from 'react';
 import {
     Row,
     Spinner,
@@ -12,9 +12,14 @@ import {
 } from 'react-bootstrap';
 import { getAllTokens } from '../services/contract';
 import { Action, dataFetchReducer } from '../services/reducer';
+import { SearchBar } from './SearchBar';
 
 export const AllTokens: FC = () => {
-    const useAllTokensFetcher = (): any => {
+    const [query, setQuery] = useState('');
+
+    const useAllTokensFetcher = (initialQuery: string): any => {
+        const [filter, setFilter] = useState(initialQuery);
+
         const [state, dispatch] = useReducer(dataFetchReducer, {
             isLoading: false,
             isError: false,
@@ -25,50 +30,37 @@ export const AllTokens: FC = () => {
             (async (): Promise<void> => {
                 dispatch({ type: 'FETCH_INIT' } as Action);
                 const tokens = await getAllTokens();
-
                 try {
                     dispatch({ type: 'FETCH_SUCCESS', payload: tokens } as Action);
                 } catch (error) {
                     dispatch({ type: 'FETCH_FAILURE' } as Action);
                 }
             })();
-        }, []);
+        }, [filter]);
 
-        return state;
+        state.data = state.data.filter((article: any) => article.name.includes(filter));
+
+        return [state, setFilter];
     };
 
-    const { data, isLoading, isError } = useAllTokensFetcher();
+    const [{ data, isLoading, isError }, doFilter] = useAllTokensFetcher('');
 
-    const status = 'success';
     const classStatus = 'bg-success';
 
     // eslint-disable-next-line consistent-return
-    function articleTitle(id: any): any {
+    function articleTitle(id: number): any {
         // eslint-disable-next-line no-restricted-syntax
         for (const article of data) {
             if (article.token_id === Number(id)) {
-                const title = article.name.toString();
-                const url = article.identifier.toString();
-                return [title, url];
+                return (
+                    <Nav.Link className="text-dark" href={article.identifier}>
+                        {article.name}
+                    </Nav.Link>
+                );
             }
         }
+        return <> </>;
     }
-
-    // function checkStatus(id: any): any {
-    //     const status: string;
-    //     const classStatus: string;
-    //     if ('addressToken' === 'addressBurn' || 'sourcesInvalid') {
-    //         'status = danger;'
-    //         'classStatus = bg-danger;'
-    //     } else if ('sourceInvalid') {
-    //         'status = warning;'
-    //         'classStatus = bg-warning;'
-    //     } else {
-    //         'status = success'
-    //         'classStatus = bg-success;'
-    //    }
-    //    return [status, classStatus];
-    // }
 
     return (
         <Container>
@@ -76,10 +68,20 @@ export const AllTokens: FC = () => {
                 <Spinner animation="grow" />
             ) : (
                 <p>
+                    <SearchBar
+                        value={query}
+                        onChange={(e: FormEvent<HTMLInputElement>): void =>
+                            setQuery(e.currentTarget.value)
+                        }
+                        onSubmit={(e: SyntheticEvent) => {
+                            doFilter(query);
+                            e.preventDefault();
+                        }}
+                    />
                     <Row xs={1} md={4}>
                         {data.map((article: any) => (
                             <Col>
-                                <Card bg={status} text="light" style={{ width: '18rem' }}>
+                                <Card style={{ width: '18rem' }}>
                                     <Card.Header>
                                         <OverlayTrigger
                                             overlay={
@@ -90,7 +92,7 @@ export const AllTokens: FC = () => {
                                         >
                                             <Nav.Item>
                                                 <Nav.Link
-                                                    className="text-light"
+                                                    className="text-dark"
                                                     href={article.identifier}
                                                 >
                                                     {article.name}
@@ -100,21 +102,16 @@ export const AllTokens: FC = () => {
                                     </Card.Header>
                                     <Card.Body>
                                         <ListGroup variant="flush">
-                                            {article.listOfSources?.map((source: any) => (
-                                                <ListGroup.Item className={classStatus}>
-                                                    <Nav.Item>
-                                                        <Nav.Link
-                                                            className="text-light"
-                                                            href={articleTitle(source)[1]}
-                                                        >
-                                                            {articleTitle(source)[0]}
-                                                        </Nav.Link>
-                                                    </Nav.Item>
-                                                </ListGroup.Item>
-                                            ))}
+                                            {/* {JSON.stringify(article)} */}
+                                            {article.listOfSources !== undefined &&
+                                                article.listOfSources.map((source: number) => (
+                                                    <ListGroup.Item>
+                                                        <Nav.Item>{articleTitle(source)}</Nav.Item>
+                                                    </ListGroup.Item>
+                                                ))}
                                         </ListGroup>
                                     </Card.Body>
-                                    <Card.Footer>
+                                    <Card.Footer className={classStatus}>
                                         <Card.Text>
                                             Id of this article : {article.token_id}
                                         </Card.Text>

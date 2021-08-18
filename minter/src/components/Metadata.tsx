@@ -1,4 +1,3 @@
-import { CardTravelRounded } from '@material-ui/icons';
 import { FC, useEffect, useReducer } from 'react';
 import { Card, Row, Spinner } from 'react-bootstrap';
 import { getMetadata } from '../services/contract';
