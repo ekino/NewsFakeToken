@@ -1,9 +1,20 @@
 import { useEffect, useReducer, useState, FC, Dispatch, SetStateAction } from 'react';
 import { useForm } from 'react-hook-form';
-import { useBeaconWallet, useWallet } from '@tezos-contrib/react-wallet-provider';
+import { useWallet } from '@tezos-contrib/react-wallet-provider';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
-import { Container, Form, Button, Spinner } from 'react-bootstrap';
+import {
+    Container,
+    Form,
+    Button,
+    InputGroup,
+    ListGroup,
+    Spinner,
+    OverlayTrigger,
+    Tooltip,
+} from 'react-bootstrap';
+import DeleteIcon from '@material-ui/icons/Delete';
+import { ListItemText, ListItemSecondaryAction, IconButton } from '@material-ui/core';
 import { Action, dataFetchReducer } from '../services/reducer';
 import { newNFT } from '../services/api';
 import { mint } from '../services/contract';
@@ -16,6 +27,8 @@ interface Props {
 const MintForm: FC<Props> = ({ ...props }) => {
     const { setOpHash, closeModal } = props;
     const { activeAccount } = useWallet();
+    const [currentSource, setCurrentSource] = useState<number>();
+    const [sources, setSources] = useState<number[]>([]);
 
     const useNewNFTApi = (): any => {
         const [formData, setFormData] = useState(null);
@@ -64,6 +77,7 @@ const MintForm: FC<Props> = ({ ...props }) => {
     const validationSchema = Yup.object().shape({
         title: Yup.string().required('title is required'),
         url: Yup.string().required('url is required'),
+        sources: Yup.array().of(Yup.number()),
     });
 
     const {
@@ -114,6 +128,72 @@ const MintForm: FC<Props> = ({ ...props }) => {
                             {errors.url?.message}
                         </Form.Control.Feedback>
                     </Form.Group>
+                    <Form.Group className="mb-3" controlId="NFTSources">
+                        <Form.Label>Sources of the article</Form.Label>
+                        <InputGroup className="mb-3">
+                            <Form.Control
+                                type="text"
+                                placeholder="NFT source of the article"
+                                onChange={(e: any) => setCurrentSource(e.currentTarget.value)}
+                            />
+                            <Form.Control.Feedback type="invalid">
+                                Please enter a source
+                            </Form.Control.Feedback>
+                            <OverlayTrigger
+                                overlay={
+                                    <Tooltip id="tooltip-disabled">
+                                        Add a source to this article
+                                    </Tooltip>
+                                }
+                            >
+                                <Button
+                                    variant="outline-secondary"
+                                    id="button-addon2"
+                                    onClick={(): void => {
+                                        if (undefined !== currentSource) {
+                                            setSources([...sources, currentSource]);
+                                            setCurrentSource(0);
+                                        }
+                                    }}
+                                >
+                                    Add source
+                                </Button>
+                            </OverlayTrigger>
+                        </InputGroup>
+                        <ListGroup id="ListNFT">
+                            {sources.map((item: any) => (
+                                <ListGroup.Item variant="light" key={item}>
+                                    <ListItemText primary={item} />
+                                    <ListItemSecondaryAction>
+                                        <OverlayTrigger
+                                            overlay={
+                                                <Tooltip id="tooltip-disabled">
+                                                    Delete this source
+                                                </Tooltip>
+                                            }
+                                        >
+                                            <IconButton
+                                                edge="end"
+                                                aria-label="delete"
+                                                onClick={() => {
+                                                    sources.splice(
+                                                        sources.findIndex(
+                                                            (element: any) => element === item,
+                                                        ),
+                                                        1,
+                                                    );
+                                                    setSources(Array.from(sources));
+                                                }}
+                                            >
+                                                <DeleteIcon />
+                                            </IconButton>
+                                        </OverlayTrigger>
+                                    </ListItemSecondaryAction>
+                                </ListGroup.Item>
+                            ))}
+                        </ListGroup>
+                    </Form.Group>
+
                     <Button type="submit">Mint your news</Button>
                 </Form>
             )}
