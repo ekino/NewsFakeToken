@@ -87,9 +87,9 @@ const MyTokens: FC<Props> = ({ ...props }) => {
             name: 'Actions',
             button: true,
             minWidth: '150px',
-            cell: (row: any): JSX.Element => {
-                const { tokenName, sourcesNames, url } = row;
-                return <InvalidModal nftName={tokenName} nftSource={sourcesNames} Url={url} />;
+            cell: (row: any) => {
+                const { id } = row;
+                return <InvalidModal id={id} setOpHash={setOpHash} />;
             },
         },
     ];
