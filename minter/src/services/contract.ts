@@ -6,7 +6,7 @@ import {
     MichelCodecPacker,
 } from '@taquito/taquito';
 import { Tzip12Module, tzip12 } from '@taquito/tzip12';
-import { tzip16 } from '@taquito/tzip16';
+import { Tzip16Module, tzip16, MetadataProvider, Handler, IpfsHttpHandler } from '@taquito/tzip16';
 import { char2Bytes } from '@taquito/utils';
 import BigNumber from 'bignumber.js';
 // eslint-disable-next-line import/no-extraneous-dependencies
@@ -42,7 +42,13 @@ export const getMetadata = async (): Promise<any> => {
 
 export const getTokenMetadata = async (tokenId: number): Promise<any> => {
     const tz = new TezosToolkit(RPC_URL);
-    tz.addExtension(new Tzip12Module());
+    tz.addExtension(
+        new Tzip16Module(
+            new MetadataProvider(
+                new Map<string, Handler>([['ipfs', new IpfsHttpHandler('cloudflare-ipfs.com')]]),
+            ),
+        ),
+    );
     const contract = await tz.contract.at(CONTRACT_ADDRESS, compose(tzip12, tzip16));
 
     return contract.tzip12().getTokenMetadata(tokenId);
@@ -50,7 +56,13 @@ export const getTokenMetadata = async (tokenId: number): Promise<any> => {
 
 export const getAllTokens = async (): Promise<any[]> => {
     const tz = new TezosToolkit(RPC_URL);
-    tz.addExtension(new Tzip12Module());
+    tz.addExtension(
+        new Tzip16Module(
+            new MetadataProvider(
+                new Map<string, Handler>([['ipfs', new IpfsHttpHandler('cloudflare-ipfs.com')]]),
+            ),
+        ),
+    );
     const contract = await tz.contract.at(CONTRACT_ADDRESS, tzip12);
 
     // eslint-disable-next-line  camelcase
@@ -65,7 +77,13 @@ export const getAllTokens = async (): Promise<any[]> => {
 
 export const getMyTokens = async (address: string): Promise<any[]> => {
     const tz = new TezosToolkit(RPC_URL);
-    tz.addExtension(new Tzip12Module());
+    tz.addExtension(
+        new Tzip16Module(
+            new MetadataProvider(
+                new Map<string, Handler>([['ipfs', new IpfsHttpHandler('cloudflare-ipfs.com')]]),
+            ),
+        ),
+    );
     const contract = await tz.contract.at(CONTRACT_ADDRESS, tzip12);
 
     // eslint-disable-next-line  camelcase

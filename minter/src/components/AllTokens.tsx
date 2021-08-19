@@ -38,7 +38,19 @@ export const AllTokens: FC = () => {
             })();
         }, [filter]);
 
+        const indexed = state.data.reduce((acc: any[], token: any) => {
+            acc[token.token_id] = token;
+            return acc;
+        }, []);
+
         state.data = state.data.filter((article: any) => article.name.includes(filter));
+        state.data = state.data.map((token: any) => {
+            let sources = [];
+            if (token.listOfSources !== undefined && typeof token.listOfSources === 'object') {
+                sources = token.listOfSources.map((id: number) => indexed[id]);
+            }
+            return { ...token, sources };
+        });
 
         return [state, setFilter];
     };
@@ -46,21 +58,6 @@ export const AllTokens: FC = () => {
     const [{ data, isLoading, isError }, doFilter] = useAllTokensFetcher('');
 
     const classStatus = 'bg-success';
-
-    // eslint-disable-next-line consistent-return
-    function articleTitle(id: number): any {
-        // eslint-disable-next-line no-restricted-syntax
-        for (const article of data) {
-            if (article.token_id === Number(id)) {
-                return (
-                    <Nav.Link className="text-dark" href={article.identifier}>
-                        {article.name}
-                    </Nav.Link>
-                );
-            }
-        }
-        return <> </>;
-    }
 
     return (
         <Container>
@@ -102,13 +99,18 @@ export const AllTokens: FC = () => {
                                     </Card.Header>
                                     <Card.Body>
                                         <ListGroup variant="flush">
-                                            {/* {JSON.stringify(article)} */}
-                                            {article.listOfSources !== undefined &&
-                                                article.listOfSources.map((source: number) => (
-                                                    <ListGroup.Item>
-                                                        <Nav.Item>{articleTitle(source)}</Nav.Item>
-                                                    </ListGroup.Item>
-                                                ))}
+                                            {article.sources.map((source: any) => (
+                                                <ListGroup.Item>
+                                                    <Nav.Item>
+                                                        <Nav.Link
+                                                            className="text-dark"
+                                                            href={source.identifier}
+                                                        >
+                                                            {source.name}
+                                                        </Nav.Link>
+                                                    </Nav.Item>
+                                                </ListGroup.Item>
+                                            ))}
                                         </ListGroup>
                                     </Card.Body>
                                     <Card.Footer className={classStatus}>
