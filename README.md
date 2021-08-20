@@ -2,6 +2,8 @@
 
 An NFT for tracing Fake News
 
+Testnet contract (florence): [KT1HkboDG2g1YBSRKquH1cKsxwKAB5K1Eg2K](https://better-call.dev/florencenet/KT1HkboDG2g1YBSRKquH1cKsxwKAB5K1Eg2K/operations)
+
 ## Packages
 
 yarn workspaces are used in order to be able to import contract addresses in the dapp.  
