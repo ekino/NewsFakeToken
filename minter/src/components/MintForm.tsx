@@ -76,7 +76,7 @@ const MintForm: FC<Props> = ({ ...props }) => {
 
     const validationSchema = Yup.object().shape({
         title: Yup.string().required('title is required'),
-        url: Yup.string().required('url is required'),
+        url: Yup.string().required('url is required').url(),
         sources: Yup.array().of(Yup.number()),
     });
 

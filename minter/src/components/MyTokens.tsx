@@ -54,7 +54,7 @@ const MyTokens: FC<Props> = ({ ...props }) => {
                     dispatch({ type: 'FETCH_FAILURE' } as Action);
                 }
             })();
-        }, [activeAccountAddress]);
+        }, [activeAccountAddress, opHash]);
 
         return state;
     };

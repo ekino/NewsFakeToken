@@ -4,6 +4,7 @@ import {
     TransactionWalletOperation,
     compose,
     MichelCodecPacker,
+    WalletOperationBatch,
 } from '@taquito/taquito';
 import { Tzip12Module, tzip12 } from '@taquito/tzip12';
 import { Tzip16Module, tzip16, MetadataProvider, Handler, IpfsHttpHandler } from '@taquito/tzip16';
@@ -13,6 +14,7 @@ import BigNumber from 'bignumber.js';
 import CONTRACT_ADDRESS from '@newsfaketoken/contracts/deployments/NFTS_contract';
 
 const RPC_URL = process.env.REACT_APP_RPC_URL || 'https://florencenet.smartpy.io/';
+const BURN_ADDRESS = process.env.REACT_APP_BURN_ADDRESS;
 
 let tezos: TezosToolkit;
 let minterContract: any;
@@ -104,4 +106,21 @@ export const getMyTokens = async (address: string): Promise<any[]> => {
 
 export const mint = async (cid: string, address: string): Promise<TransactionWalletOperation> => {
     return minterContract.methods.mint(char2Bytes(`ipfs://${cid}`), address).send();
+};
+
+export const remint = async (oldId: number, cid: string, address: string): Promise<string> => {
+    // TODO burn and mint in one operation
+    const batch = tezos.wallet
+        .batch()
+        .withContractCall(
+            minterContract.methods.transfer([
+                { from_: address, txs: [{ to_: BURN_ADDRESS, token_id: oldId, amount: 1 }] },
+            ]),
+        )
+        .withContractCall(minterContract.methods.mint(char2Bytes(`ipfs://${cid}`), address));
+
+    const batchOp = await batch.send();
+    await batchOp.confirmation();
+
+    return batchOp.opHash;
 };

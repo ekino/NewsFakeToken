@@ -11,7 +11,7 @@ import {
     Tooltip,
 } from 'react-bootstrap';
 import DeleteIcon from '@material-ui/icons/Delete';
-// import SwapHorizIcon from '@material-ui/icons/SwapHoriz';
+import SwapHorizIcon from '@material-ui/icons/SwapHoriz';
 import { ListItemText, ListItemSecondaryAction, IconButton } from '@material-ui/core';
 // import { RepostInfo } from '../hooks/upload';
 import { useForm } from 'react-hook-form';
@@ -19,7 +19,7 @@ import { useWallet } from '@tezos-contrib/react-wallet-provider';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
 import { Action, dataFetchReducer } from '../services/reducer';
-import { getTokenMetadata, mint } from '../services/contract';
+import { getTokenMetadata, remint } from '../services/contract';
 import { newNFT } from '../services/api';
 
 interface Props {
@@ -60,13 +60,19 @@ const RemintForm: FC<Props> = ({ ...props }) => {
                     throw new Error('could not pin NFT');
                 }
 
-                const op = await mint(jsonResponse.msg.metadataHash, activeAccount.address);
-                setOpHash(op.opHash);
+                const oldId = (fd: any): number => fd.oldId;
+
+                const opHash = await remint(
+                    oldId(formData),
+                    jsonResponse.msg.metadataHash,
+                    activeAccount.address,
+                );
+                setOpHash(opHash);
 
                 try {
                     dispatch({
                         type: 'FETCH_SUCCESS',
-                        payload: { operationHash: op.opHash },
+                        payload: { operationHash: opHash },
                     } as Action);
                 } catch (error) {
                     dispatch({ type: 'FETCH_FAILURE' } as Action);
@@ -116,8 +122,10 @@ const RemintForm: FC<Props> = ({ ...props }) => {
         register,
         handleSubmit,
         formState: { errors },
+        setValue,
     } = useForm({
         resolver: yupResolver(validationSchema),
+        mode: 'onBlur',
     });
 
     const {
@@ -128,17 +136,32 @@ const RemintForm: FC<Props> = ({ ...props }) => {
     const [{ data: newNFTData, isLoading: isNewNFTLoading, isError: isNewNFTError }, setFormData] =
         useNewNFTApi();
 
+    useEffect(() => {
+        if (tokenMeta) {
+            setValue('title', tokenMeta.name);
+            setValue('oldId', tokenMeta.token_id);
+        }
+    }, [tokenMeta]);
+
     const onSubmit = async (submittedData: FormData): Promise<void> => {
         setFormData(submittedData);
     };
 
+    const swapItem = (index: any, evt: any): void => {
+        alert('You want to swap this item');
+    };
+
     return (
         <Container>
-            {JSON.stringify(tokenMeta)}
             {isTokenMetaLoading ? (
                 <Spinner animation="grow" />
             ) : (
                 <Form noValidate onSubmit={handleSubmit(onSubmit)}>
+                    <input
+                        type="hidden"
+                        // eslint-disable-next-line react/jsx-props-no-spreading
+                        {...register('oldId')}
+                    />
                     <Form.Group className="mb-3">
                         <Form.Label className="required">Title of the article</Form.Label>
                         <Form.Control
@@ -146,6 +169,7 @@ const RemintForm: FC<Props> = ({ ...props }) => {
                             placeholder="Title of the article"
                             // eslint-disable-next-line react/jsx-props-no-spreading
                             {...register('title')}
+                            value={tokenMeta.name}
                         />
                         <Form.Control.Feedback type="invalid">
                             {errors.title?.message}
@@ -203,6 +227,22 @@ const RemintForm: FC<Props> = ({ ...props }) => {
                                         <OverlayTrigger
                                             overlay={
                                                 <Tooltip id="tooltip-disabled">
+                                                    Swap this source against another
+                                                </Tooltip>
+                                            }
+                                        >
+                                            <IconButton
+                                                edge="end"
+                                                aria-label="swap"
+                                                onClick={(evt) => swapItem(item, evt)}
+                                            >
+                                                <SwapHorizIcon />
+                                            </IconButton>
+                                        </OverlayTrigger>
+
+                                        <OverlayTrigger
+                                            overlay={
+                                                <Tooltip id="tooltip-disabled">
                                                     Delete this source
                                                 </Tooltip>
                                             }
@@ -228,7 +268,6 @@ const RemintForm: FC<Props> = ({ ...props }) => {
                             ))}
                         </ListGroup>
                     </Form.Group>
-
                     <Button type="submit">Mint your news</Button>
                 </Form>
             )}
