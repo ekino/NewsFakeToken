@@ -169,7 +169,6 @@ const RemintForm: FC<Props> = ({ ...props }) => {
                             placeholder="Title of the article"
                             // eslint-disable-next-line react/jsx-props-no-spreading
                             {...register('title')}
-                            value={tokenMeta.name}
                         />
                         <Form.Control.Feedback type="invalid">
                             {errors.title?.message}
