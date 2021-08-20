@@ -64,7 +64,7 @@ export const AllTokens: FC = () => {
             {isLoading ? (
                 <Spinner animation="grow" />
             ) : (
-                <p>
+                <>
                     <SearchBar
                         value={query}
                         onChange={(e: FormEvent<HTMLInputElement>): void =>
@@ -122,7 +122,7 @@ export const AllTokens: FC = () => {
                             </Col>
                         ))}
                     </Row>
-                </p>
+                </>
             )}
 
             {isError && <p>Oups</p>}
